@@ -1,0 +1,43 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "forceConsistentCasingInFileNames": true,
+    "target": "ESNext",
+    "module": "ESNext",
+    "strict": true,
+    "importHelpers": false,
+    "moduleResolution": "node",
+    "allowJs": false,
+    "esModuleInterop": false,
+    "allowSyntheticDefaultImports": false,
+    "noImplicitAny": false,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true,
+    "rootDir": ".",
+    "baseUrl": ".",
+    "outDir": "dist",
+    "lib": [
+      "ESNext",
+      "dom"
+    ],
+    "types": [
+      "vite"
+    ],
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    }
+  },
+  "include": [
+    "src/**/*.glsl",
+    "src/**/*.ts"
+, "src/m4.js"  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "src/**/*.spec.ts"
+  ]
+}
