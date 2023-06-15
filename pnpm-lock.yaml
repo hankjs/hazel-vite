@@ -4,36 +4,62 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-dependencies:
-  gl-matrix:
-    specifier: ^3.4.3
-    version: 3.4.3
+importers:
 
-devDependencies:
-  '@rollup/pluginutils':
-    specifier: ^5.0.2
-    version: 5.0.2
-  '@types/jsdom':
-    specifier: ^21.1.1
-    version: 21.1.1
-  '@types/node':
-    specifier: ^20.2.1
-    version: 20.2.1
-  '@vue/test-utils':
-    specifier: ^2.3.2
-    version: 2.3.2(vue@3.3.4)
-  jsdom:
-    specifier: ^22.1.0
-    version: 22.1.0
-  sass:
-    specifier: ^1.57.1
-    version: 1.57.1
-  vite:
-    specifier: ^4.3.9
-    version: 4.3.9(@types/node@20.2.1)(sass@1.57.1)
-  vitest:
-    specifier: ^0.31.1
-    version: 0.31.1(jsdom@22.1.0)(sass@1.57.1)
+  .:
+    dependencies:
+      '@hazel/sandbox':
+        specifier: workspace:^
+        version: link:packages/Sandbox
+      '@hazel/tsconfig':
+        specifier: workspace:^
+        version: link:packages/tsconfig
+      gl-matrix:
+        specifier: ^3.4.3
+        version: 3.4.3
+    devDependencies:
+      '@rollup/pluginutils':
+        specifier: ^5.0.2
+        version: 5.0.2
+      '@types/jsdom':
+        specifier: ^21.1.1
+        version: 21.1.1
+      '@types/node':
+        specifier: ^20.2.1
+        version: 20.2.1
+      '@vue/test-utils':
+        specifier: ^2.3.2
+        version: 2.3.2(vue@3.3.4)
+      jsdom:
+        specifier: ^22.1.0
+        version: 22.1.0
+      sass:
+        specifier: ^1.57.1
+        version: 1.57.1
+      vite:
+        specifier: ^4.3.9
+        version: 4.3.9(@types/node@20.2.1)(sass@1.57.1)
+      vitest:
+        specifier: ^0.31.1
+        version: 0.31.1(jsdom@22.1.0)(sass@1.57.1)
+
+  packages/Hazel:
+    devDependencies:
+      '@hazel/tsconfig':
+        specifier: workspace:^
+        version: link:../tsconfig
+
+  packages/Sandbox:
+    dependencies:
+      '@hazel/hazel':
+        specifier: workspace:^
+        version: link:../Hazel
+    devDependencies:
+      '@hazel/tsconfig':
+        specifier: workspace:^
+        version: link:../tsconfig
+
+  packages/tsconfig: {}
 
 packages:
 
