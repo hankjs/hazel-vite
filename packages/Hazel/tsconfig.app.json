@@ -12,7 +12,8 @@
       "dom"
     ],
     "types": [
-      "vite"
+      "vite",
+      "@hazel/tsconfig"
     ],
   },
   "include": [

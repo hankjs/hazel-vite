@@ -11,6 +11,9 @@ importers:
       '@hazel/sandbox':
         specifier: workspace:^
         version: link:packages/Sandbox
+      '@hazel/share':
+        specifier: workspace:^
+        version: link:packages/share
       '@hazel/tsconfig':
         specifier: workspace:^
         version: link:packages/tsconfig

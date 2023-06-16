@@ -1,4 +1,4 @@
-import { BIT } from "../../utils";
+import { BIT } from "../utils";
 
 export enum EventType {
     None = 0,

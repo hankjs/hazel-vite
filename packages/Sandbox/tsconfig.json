@@ -10,6 +10,9 @@
     "lib": [
       "ESNext",
     ],
+    "types": [
+      "@hazel/tsconfig"
+    ]
   },
   "include": [
     "index.ts",
