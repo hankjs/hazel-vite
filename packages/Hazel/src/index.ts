@@ -1,4 +1,4 @@
-import { Application as _Application } from "./src/Application";
+import { Application as _Application } from "./Hazel/Application";
 
 export namespace Hazel {
     interface Application {

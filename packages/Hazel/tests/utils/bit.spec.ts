@@ -1,5 +1,5 @@
 import { test, expect } from "vitest";
-import { BIT } from "../../src/utils";
+import { BIT } from "@packages/Hazel/src/utils";
 
 test("use BIT", () => {
     expect(BIT(0)).toBe(0b00000);
@@ -11,18 +11,18 @@ test("use BIT", () => {
 });
 
 test("compare BIT", () => {
-    expect(BIT(0) === BIT(0)).toBe(true)
+    expect(BIT(0) === BIT(0)).toBe(true);
 
-    expect((BIT(1) | BIT(2)) === BIT(1)).toBe(false)
-    expect(BIT(0) === BIT(1)).toBe(false)
+    expect((BIT(1) | BIT(2)) === BIT(1)).toBe(false);
+    expect(BIT(0) === BIT(1)).toBe(false);
 });
 
 test("contain BIT", () => {
-    expect(BIT.contain(BIT(0), BIT(0))).toBe(true)
-    expect(BIT.contain(BIT(0) | BIT(1), BIT(1))).toBe(true)
-    expect(BIT.contain(BIT(2) | BIT(3), BIT(2))).toBe(true)
-    expect(BIT.contain(BIT(2) | BIT(3), BIT(3))).toBe(true)
+    expect(BIT.contain(BIT(0), BIT(0))).toBe(true);
+    expect(BIT.contain(BIT(0) | BIT(1), BIT(1))).toBe(true);
+    expect(BIT.contain(BIT(2) | BIT(3), BIT(2))).toBe(true);
+    expect(BIT.contain(BIT(2) | BIT(3), BIT(3))).toBe(true);
 
-    expect(BIT.contain(BIT(2) | BIT(3), BIT(1))).toBe(false)
-    expect(BIT.contain(BIT(0), BIT(1))).toBe(false)
+    expect(BIT.contain(BIT(2) | BIT(3), BIT(1))).toBe(false);
+    expect(BIT.contain(BIT(0), BIT(1))).toBe(false);
 });

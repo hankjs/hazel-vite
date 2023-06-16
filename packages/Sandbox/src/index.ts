@@ -1,5 +1,5 @@
 import type { Hazel } from "@hazel/hazel";
-import { SandboxApp as _SandboxApp } from "./src/SandboxApp";
+import { SandboxApp as _SandboxApp } from "./SandboxApp";
 
 export namespace Sandbox {
     export const SandboxApp = _SandboxApp;
