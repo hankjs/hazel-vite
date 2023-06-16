@@ -15,7 +15,7 @@ import {
     MouseScrolledEvent,
 } from "@Hazel/Hazel/Events/MouseEvent";
 import {
-    Window,
+    Window as _Window,
     type EventCallBackFn,
     type WindowProps,
 } from "@Hazel/Hazel/Window";
@@ -29,12 +29,12 @@ const defaultProps = (): Props => ({
 });
 const noop = () => {};
 
-export class WebWindow extends Window {
+export class Window extends _Window {
     container: Element = document.body;
     isOutside = false;
 
-    static create(props: Props = defaultProps()): Window {
-        return new WebWindow(props);
+    static create(props: Props = defaultProps()): _Window {
+        return new Window(props);
     }
 
     getWidth(): number {

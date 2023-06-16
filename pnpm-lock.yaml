@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@hazel/hazel':
+        specifier: workspace:^
+        version: link:packages/Hazel
       '@hazel/sandbox':
         specifier: workspace:^
         version: link:packages/Sandbox
