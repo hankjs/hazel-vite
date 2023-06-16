@@ -8,6 +8,8 @@
     "importHelpers": false,
     "noEmit": true,
 
+    "experimentalDecorators": true,
+
     // Required in Vue projects
     "jsx": "preserve",
 

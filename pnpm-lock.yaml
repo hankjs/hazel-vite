@@ -44,6 +44,10 @@ importers:
         version: 0.31.1(jsdom@22.1.0)(sass@1.57.1)
 
   packages/Hazel:
+    dependencies:
+      '@hazel/share':
+        specifier: workspace:^
+        version: link:../share
     devDependencies:
       '@hazel/tsconfig':
         specifier: workspace:^
@@ -55,6 +59,12 @@ importers:
         specifier: workspace:^
         version: link:../Hazel
     devDependencies:
+      '@hazel/tsconfig':
+        specifier: workspace:^
+        version: link:../tsconfig
+
+  packages/share:
+    dependencies:
       '@hazel/tsconfig':
         specifier: workspace:^
         version: link:../tsconfig

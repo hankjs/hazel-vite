@@ -1,19 +1,15 @@
 {
-  "name": "@hazel/hazel",
+  "name": "@hazel/share",
   "version": "1.0.0",
   "description": "",
-  "type": "module",
-  "main": "index.ts",
+  "main": "src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "@hazel/tsconfig": "workspace:^"
-  },
   "dependencies": {
-    "@hazel/share": "workspace:^"
+    "@hazel/tsconfig": "workspace:^"
   }
 }

@@ -1,0 +1,29 @@
+{
+  "extends": "@hazel/tsconfig/tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "rootDir": ".",
+    "baseUrl": ".",
+    "outDir": "dist",
+    "lib": [
+      "ESNext",
+      "dom"
+    ],
+    "types": [
+      "vite"
+    ],
+    "paths": {
+      "@/*": [
+        "src/*"
+      ],
+    }
+  },
+  "include": [
+    "src/**/*.ts",
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "src/**/*.spec.ts"
+  ]
+}

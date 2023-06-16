@@ -1,8 +1,8 @@
 import { defineConfig } from "vite";
-import path from "path";
+import { resolve } from "path";
 
 function _resolve(dir: string) {
-    return path.resolve(__dirname, dir);
+    return resolve(__dirname, dir);
 }
 
 // https://vitejs.dev/config/

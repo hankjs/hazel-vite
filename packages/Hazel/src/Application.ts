@@ -1,4 +1,4 @@
-export class Application {
+export abstract class Application {
     run(): void {
         console.log("Hazel Application running...");
     }
