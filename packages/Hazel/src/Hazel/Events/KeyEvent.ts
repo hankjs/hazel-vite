@@ -16,17 +16,17 @@ export class KeyEvent extends Event {
 export class KeyPressedEvent extends KeyEvent {
     constructor(
         code: string,
-        private m_repeat: boolean
+        private repeat: boolean
     ) {
         super(code);
     }
 
     getRepeatCount() {
-        return this.m_repeat;
+        return this.repeat;
     }
 
     toString(): string {
-        return `KeyPressedEvent: ${this.code} (${this.m_repeat} repeats)`;
+        return `KeyPressedEvent: ${this.code} (${this.repeat} repeats)`;
     }
 }
 

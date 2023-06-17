@@ -1,5 +1,5 @@
 import { test, expect } from "vitest";
-import { BIT } from "@Hazel/Hazel/utils";
+import { BIT } from "@pw/Hazel/Hazel/utils";
 
 test("use BIT", () => {
     expect(BIT(0)).toBe(0b00000);

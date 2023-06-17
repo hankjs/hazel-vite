@@ -10,8 +10,8 @@ export default defineConfig({
     resolve: {
         alias: {
             "@": _resolve("src"),
-            "@Hazel": _resolve("packages/Hazel/src"),
-            "@Sandbox": _resolve("packages/Sandbox/src"),
+            "@pw/Hazel": _resolve("packages/Hazel/src"),
+            "@pw/Sandbox": _resolve("packages/Sandbox/src"),
         },
     },
     server: {

@@ -5,12 +5,12 @@ export interface WindowProps<E = Element> {
     title: string;
     width: number;
     height: number;
-    el?: E;
+    el: string | E;
 }
 
 export type EventCallBackFn = (e: Event) => void;
-export abstract class Window extends Lifecycle {
-    static create: <P extends WindowProps<any>>(props?: P) => Window 
+export abstract class AppWindow extends Lifecycle {
+    static create: <P extends WindowProps<any>>(props: P) => AppWindow 
 
     abstract getWidth(): number 
     abstract getHeight(): number 

@@ -4,19 +4,19 @@ import { EventCategory, eventClassCategory, eventClassType, Event, EventType } f
 @eventClassType(EventType.MouseMoved)
 export class MouseMovedEvent extends Event {
     constructor(
-        protected m_MouseX: number,
-        protected m_MouseY: number,
+        protected mouseX: number,
+        protected mouseY: number,
     ) { super(); }
 
     getX() {
-        return this.m_MouseX;
+        return this.mouseX;
     }
     getY() {
-        return this.m_MouseY;
+        return this.mouseY;
     }
 
     toString(): string {
-        return `MouseMovedEvent: ${this.m_MouseX}, ${this.m_MouseY}`;
+        return `MouseMovedEvent: ${this.mouseX}, ${this.mouseY}`;
     }
 }
 

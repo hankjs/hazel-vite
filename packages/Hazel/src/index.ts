@@ -1,11 +1,11 @@
-import { Application as _Application } from "./Hazel/Application";
+import * as _Hazel from "./Hazel";
+import * as Platform from "./Platform";
 
 export namespace Hazel {
-    interface Application {
-        run(): void;
-    }
-    export const Application = _Application;
+    export type WindowProps = _Hazel.WindowProps;
 
-	// To be defined in CLIENT
-    export type CreateApplication = () => Application;
+    export const Application = Platform.Application;
+
+    // To be defined in CLIENT
+    export type CreateApplication = (props: WindowProps) => _Hazel.Application;
 }

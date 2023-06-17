@@ -1,15 +1,52 @@
-import type { Window as _Window } from "./Window";
-import { Window } from "@Hazel/Plarform";
+import type { WindowProps } from "./AppWindow";
+import type {
+    AppRenderEvent,
+    AppTickEvent,
+    AppUpdateEvent,
+    Event,
+    KeyEvent,
+    KeyPressedEvent,
+    KeyReleasedEvent,
+    KeyTypedEvent,
+    MouseButtonEvent,
+    MouseButtonPressedEvent,
+    MouseButtonReleasedEvent,
+    MouseMovedEvent,
+    MouseScrolledEvent,
+    WindowCloseEvent,
+    WindowResizeEvent,
+} from "./Events";
 
+/**
+ * Hazel export Application is Platform Implemented.
+ * here is the interface for the Application class.
+ */
 export abstract class Application {
-    constructor() {
-        this.window = Window.create();
-    }
+    constructor(props: WindowProps) {}
+    // implements in Platform
     run(): void {
-        console.log("Hazel Application running...");
+        throw new Error("Method not implemented.");
     }
 
-    // #region Private Fields
-    window: _Window;
-    running: boolean = true;
+    // implements in Client
+    onEvent(
+        event:
+            | Event
+            | WindowResizeEvent
+            | WindowCloseEvent
+            | AppTickEvent
+            | AppUpdateEvent
+            | AppRenderEvent
+            | KeyEvent
+            | KeyPressedEvent
+            | KeyReleasedEvent
+            | KeyTypedEvent
+            | MouseMovedEvent
+            | MouseScrolledEvent
+            | MouseButtonEvent
+            | MouseButtonPressedEvent
+            | MouseButtonReleasedEvent,
+    ) {
+        throw new Error("Method not implemented.");
+    }
 }

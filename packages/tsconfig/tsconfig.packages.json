@@ -1,10 +1,10 @@
 {
   "compilerOptions": {
     "paths": {
-      "@Hazel/*": [
+      "@pw/Hazel/*": [
         "../Hazel/src/*"
       ],
-      "@Sandbox/*": [
+      "@pw/Sandbox/*": [
         "../Sandbox/src/*"
       ],
     }

@@ -45,7 +45,7 @@ export function eventClassType(eventType: EventType) {
             writable: false,
         });
 
-        Object.setPrototypeOf(target.prototype, {
+        Object.assign(target.prototype, {
             getType() {
                 return target.getStaticType();
             },
@@ -69,36 +69,46 @@ export function eventClassCategory(eventCategory: EventCategory) {
     };
 }
 export abstract class Event {
+    //#region eventClassType
     /** use Descriptor {eventClassType} to implement */
     static getStaticType: () => EventType
-    getType!: () => EventType;
-    getName!: () => EventTypeKey;
+    getType(): EventType {
+        throw new Error("Method not implemented.");
+    };
+    getName(): EventTypeKey {
+        throw new Error("Method not implemented.");
+    };
+    //#endregion
 
+    //#region eventClassCategory
     /** use Descriptor {eventClassCategory} to implement */
-    getCategoryFlags!: () => EventCategory;
+    getCategoryFlags() : EventCategory {
+        throw new Error("Method not implemented.");
+    };
+    //#endregion
 
     isInCategory(category: EventCategory): boolean {
         return BIT.contain(this.getCategoryFlags(), category);
     }
 
-    m_Handled = false;
+    handled = false;
 }
 
 export class EventDispatcher {
     constructor(event: Event) {
-        this.m_Event = event;
+        this.event = event;
     }
 
     dispatch<T extends Event>(
         event: typeof Event,
         func: (event: T) => boolean,
     ) {
-        if (this.m_Event.getType() === event.getStaticType()) {
-            this.m_Event.m_Handled = func(this.m_Event as T);
+        if (this.event.getType() === event.getStaticType()) {
+            this.event.handled = func(this.event as T);
             return true;
         }
         return false;
     }
 
-    private m_Event: Event;
+    private event: Event;
 }

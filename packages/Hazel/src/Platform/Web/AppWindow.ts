@@ -2,78 +2,82 @@ import { listenElementRemove } from "@hazel/share";
 import {
     WindowCloseEvent,
     WindowResizeEvent,
-} from "@Hazel/Hazel/Events/ApplicationEvent";
+} from "@pw/Hazel/Hazel/Events/ApplicationEvent";
 import {
     KeyPressedEvent,
     KeyReleasedEvent,
     KeyTypedEvent,
-} from "@Hazel/Hazel/Events/KeyEvent";
+} from "@pw/Hazel/Hazel/Events/KeyEvent";
 import {
     MouseButtonPressedEvent,
     MouseButtonReleasedEvent,
     MouseMovedEvent,
     MouseScrolledEvent,
-} from "@Hazel/Hazel/Events/MouseEvent";
+} from "@pw/Hazel/Hazel/Events/MouseEvent";
 import {
-    Window as _Window,
+    AppWindow as _AppWindow,
     type EventCallBackFn,
-    type WindowProps,
-} from "@Hazel/Hazel/Window";
+    type WindowProps as _WindowProps,
+} from "@pw/Hazel/Hazel/AppWindow";
 
-type Props = WindowProps<HTMLElement>;
+export type WindowProps = _WindowProps<HTMLCanvasElement>;
 
-const defaultProps = (): Props => ({
-    title: "Hazel",
-    width: 300,
-    height: 300,
-});
 const noop = () => {};
 
-export class Window extends _Window {
-    container: Element = document.body;
+export class AppWindow extends _AppWindow {
+    container!: HTMLCanvasElement;
     isOutside = false;
 
-    static create(props: Props = defaultProps()): _Window {
-        return new Window(props);
+    static create(props: WindowProps): _AppWindow {
+        return new AppWindow(props);
     }
 
     getWidth(): number {
-        return this.m_data.width;
+        return this.#data.width;
     }
 
     getHeight(): number {
-        return this.m_data.height;
+        return this.#data.height;
     }
 
-    constructor(props: Props) {
+    constructor(props: WindowProps) {
         super();
         this.init(props);
     }
 
-    onUpdate(): void {}
+    onUpdate(): void { }
     onAttach(): void {}
     onDetach(): void {}
 
     setVSync(enabled: boolean): void {
-        this.m_data.VSync = enabled;
+        this.#data.VSync = enabled;
     }
 
     isVSync(): boolean {
-        return this.m_data.VSync;
+        return this.#data.VSync;
     }
 
     setEventCallback(callback: EventCallBackFn) {
-        this.m_data.eventCallback = callback;
+        this.#data.eventCallback = callback;
     }
 
     //#region Private Methods
-    init(props: Props) {
-        if (props.el) {
-            this.container = props.el;
+    init(props: WindowProps) {
+        let { el } = props;
+        if (typeof el === "string") {
+            const canvas = document.querySelector(el);
+            if (!canvas) {
+                throw new Error(`Cannot find element ${el}`);
+            }
+            el = canvas as HTMLCanvasElement
         }
-        this.m_data.title = props.title;
-        this.m_data.width = props.width;
-        this.m_data.height = props.height;
+        this.container = el;
+        this.#data.title = props.title;
+        this.#data.width = props.width;
+        this.#data.height = props.height;
+
+        this.container.style.width = `${props.width}px`;
+        this.container.style.height = `${props.height}px`;
 
         console.info(
             `Creating window ${props.title} ${props.width} ${props.height}`,
@@ -82,13 +86,13 @@ export class Window extends _Window {
         const resizeHandler = () => {
             const rect = this.container.getBoundingClientRect();
             const event = new WindowResizeEvent(rect.width, rect.height);
-            this.m_data.eventCallback(event);
+            this.#data.eventCallback(event);
         };
         window.addEventListener("resize", resizeHandler);
 
         const keydownHandler = (event: KeyboardEvent) => {
             if (this.isOutside) return;
-            this.m_data.eventCallback(
+            this.#data.eventCallback(
                 new KeyPressedEvent(event.code, event.repeat),
             );
         };
@@ -96,19 +100,19 @@ export class Window extends _Window {
 
         const keypressHandler = (event: KeyboardEvent) => {
             if (this.isOutside) return;
-            this.m_data.eventCallback(new KeyTypedEvent(event.code));
+            this.#data.eventCallback(new KeyTypedEvent(event.code));
         };
         document.addEventListener("keypress", keypressHandler);
 
         const keyupHandler = (event: KeyboardEvent) => {
             if (this.isOutside) return;
-            this.m_data.eventCallback(new KeyReleasedEvent(event.code));
+            this.#data.eventCallback(new KeyReleasedEvent(event.code));
         };
         document.addEventListener("keyup", keyupHandler);
 
         const mousedownHandler = (event: MouseEvent) => {
             if (this.isOutside) return;
-            this.m_data.eventCallback(
+            this.#data.eventCallback(
                 new MouseButtonPressedEvent(event.button),
             );
         };
@@ -123,7 +127,7 @@ export class Window extends _Window {
 
         const mouseupHandler = (event: MouseEvent) => {
             if (this.isOutside) return;
-            this.m_data.eventCallback(
+            this.#data.eventCallback(
                 new MouseButtonReleasedEvent(event.button),
             );
         };
@@ -133,7 +137,7 @@ export class Window extends _Window {
             if (this.isOutside) return;
             event.preventDefault();
             event.stopPropagation();
-            this.m_data.eventCallback(
+            this.#data.eventCallback(
                 new MouseScrolledEvent(event.deltaX, event.deltaY),
             );
         };
@@ -159,13 +163,13 @@ export class Window extends _Window {
                 elX > width ||
                 elY > height;
             if (this.isOutside) return;
-            this.m_data.eventCallback(new MouseMovedEvent(elX, elY));
+            this.#data.eventCallback(new MouseMovedEvent(elX, elY));
         };
         document.addEventListener("mousemove", mousemoveHandler);
 
         listenElementRemove(this.container, () => {
             const event = new WindowCloseEvent();
-            this.m_data.eventCallback(event);
+            this.#data.eventCallback(event);
 
             window.removeEventListener("resize", resizeHandler);
             document.removeEventListener("keydown", keydownHandler);
@@ -183,7 +187,7 @@ export class Window extends _Window {
     //#endregion
 
     //#region Private Fields
-    private m_data = {
+    #data = {
         title: "",
         width: 0,
         height: 0,
