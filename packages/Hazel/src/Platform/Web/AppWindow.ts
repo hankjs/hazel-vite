@@ -19,6 +19,7 @@ import {
     type EventCallBackFn,
     type WindowProps as _WindowProps,
 } from "@pw/Hazel/Hazel/AppWindow";
+import { GLContext } from "./GLContext";
 
 export type WindowProps = _WindowProps<HTMLCanvasElement>;
 
@@ -26,6 +27,7 @@ const noop = () => {};
 
 export class AppWindow extends _AppWindow {
     container!: HTMLCanvasElement;
+    #glContext!: GLContext;
     isOutside = false;
 
     static create(props: WindowProps): _AppWindow {
@@ -45,7 +47,7 @@ export class AppWindow extends _AppWindow {
         this.init(props);
     }
 
-    onUpdate(): void { }
+    onUpdate(): void {}
     onAttach(): void {}
     onDetach(): void {}
 
@@ -69,7 +71,7 @@ export class AppWindow extends _AppWindow {
             if (!canvas) {
                 throw new Error(`Cannot find element ${el}`);
             }
-            el = canvas as HTMLCanvasElement
+            el = canvas as HTMLCanvasElement;
         }
         this.container = el;
         this.#data.title = props.title;
@@ -78,6 +80,9 @@ export class AppWindow extends _AppWindow {
 
         this.container.style.width = `${props.width}px`;
         this.container.style.height = `${props.height}px`;
+
+        this.#glContext = new GLContext(this.container);
+        this.#glContext.init();
 
         console.info(
             `Creating window ${props.title} ${props.width} ${props.height}`,
@@ -112,9 +117,7 @@ export class AppWindow extends _AppWindow {
 
         const mousedownHandler = (event: MouseEvent) => {
             if (this.isOutside) return;
-            this.#data.eventCallback(
-                new MouseButtonPressedEvent(event.button),
-            );
+            this.#data.eventCallback(new MouseButtonPressedEvent(event.button));
         };
         document.addEventListener("mousedown", mousedownHandler);
 

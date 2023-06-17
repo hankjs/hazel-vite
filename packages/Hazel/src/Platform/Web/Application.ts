@@ -4,6 +4,7 @@ import {
 } from "@pw/Hazel/Hazel";
 import { AppWindow as AppWindowImpl, type WindowProps } from "./AppWindow";
 import { Loop } from "./Loop";
+import { gl } from "./GLContext";
 
 export class Application extends _Application {
     constructor(props: WindowProps) {
@@ -15,6 +16,9 @@ export class Application extends _Application {
     run(): void {
         console.log("Hazel Application running...");
         this.#loop.while(() => {
+            gl.clearColor(0.1, 0.1, 0.1, 1.0);
+            gl.clear(gl.COLOR_BUFFER_BIT);
+
             this.#appWindow.onUpdate();
         })
     }
