@@ -1,4 +1,4 @@
-import { Layer, Event, EventType, KeyEvent, Application, type WindowProps, DatGuiLayer } from "@hazel/hazel";
+import { Layer, Event, EventType, KeyEvent, Application, type WindowProps, DatGuiLayer, Input } from "@hazel/hazel";
 import { KeyCodes } from "@hazel/share";
 
 class ExampleLayer extends Layer {

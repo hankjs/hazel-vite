@@ -21,10 +21,6 @@ import { LayerStack } from "./LayerStack";
 
 let app: Application;
 
-export function getApp() {
-    return app;
-}
-
 export function setApp(instance: Application) {
     app = instance;
 }
@@ -39,6 +35,10 @@ export abstract class Application {
         }
         this.layerStack = new LayerStack();
         setApp(this);
+    }
+
+    static getInstance(): Application {
+        return app;
     }
 
     getAppWindow(): AppWindow {

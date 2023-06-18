@@ -5,3 +5,4 @@ export * from "./Loop";
 export * from "./Layer";
 export * from "./Events";
 export * from "./Gui";
+export * from "./Input";

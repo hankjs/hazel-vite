@@ -26,9 +26,13 @@ export type WindowProps = _WindowProps<HTMLCanvasElement>;
 const noop = () => {};
 
 export class AppWindow extends _AppWindow {
-    container!: HTMLCanvasElement;
+    #container!: HTMLCanvasElement;
     #glContext!: GLContext;
     isOutside = false;
+
+    getContainer() {
+        return this.#container;
+    }
 
     static create(props: WindowProps): _AppWindow {
         return new AppWindow(props);
@@ -73,15 +77,15 @@ export class AppWindow extends _AppWindow {
             }
             el = canvas as HTMLCanvasElement;
         }
-        this.container = el;
+        this.#container = el;
         this.#data.title = props.title;
         this.#data.width = props.width;
         this.#data.height = props.height;
 
-        this.container.style.width = `${props.width}px`;
-        this.container.style.height = `${props.height}px`;
+        this.#container.style.width = `${props.width}px`;
+        this.#container.style.height = `${props.height}px`;
 
-        this.#glContext = new GLContext(this.container);
+        this.#glContext = new GLContext(this.#container);
         this.#glContext.init();
 
         console.info(
@@ -89,7 +93,7 @@ export class AppWindow extends _AppWindow {
         );
 
         const resizeHandler = () => {
-            const rect = this.container.getBoundingClientRect();
+            const rect = this.#container.getBoundingClientRect();
             const event = new WindowResizeEvent(rect.width, rect.height);
             this.#data.eventCallback(event);
         };
@@ -150,7 +154,7 @@ export class AppWindow extends _AppWindow {
 
         const mousemoveHandler = (event: MouseEvent) => {
             const { left, top, width, height } =
-                this.container.getBoundingClientRect();
+                this.#container.getBoundingClientRect();
 
             const elementPositionX = left + window.pageXOffset;
             const elementPositionY = top + window.pageYOffset;
@@ -170,7 +174,7 @@ export class AppWindow extends _AppWindow {
         };
         document.addEventListener("mousemove", mousemoveHandler);
 
-        listenElementRemove(this.container, () => {
+        listenElementRemove(this.#container, () => {
             const event = new WindowCloseEvent();
             this.#data.eventCallback(event);
 

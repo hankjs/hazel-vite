@@ -20,3 +20,4 @@ export const AppWindow = modules[`./${PLATFORM}/AppWindow.ts`]
     .AppWindow as typeof Hazel.AppWindow;
 
 export const Loop = modules[`./${PLATFORM}/Loop.ts`].Loop as typeof Hazel.Loop;
+export const Input = modules[`./${PLATFORM}/Input.ts`].Input as typeof Hazel.Input;

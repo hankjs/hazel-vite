@@ -17,4 +17,6 @@ export abstract class AppWindow extends Lifecycle {
     abstract setEventCallback(callback: EventCallBackFn): void 
     abstract setVSync(enabled: boolean): void 
     abstract isVSync(): boolean 
+
+    abstract getContainer(): any
 }

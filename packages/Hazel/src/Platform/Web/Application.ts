@@ -1,5 +1,4 @@
 import {
-    type AppWindow,
     Application as _Application,
     AppRenderEvent,
     AppTickEvent,
@@ -20,12 +19,18 @@ import {
 import { AppWindow as AppWindowImpl, type WindowProps } from "./AppWindow";
 import { Loop } from "./Loop";
 import { gl } from "./GLContext";
+import { Input } from "./Input";
 
 export class Application extends _Application {
+    static getInstance(): _Application {
+        return _Application.getInstance()
+    }
+
     constructor(props: WindowProps) {
         super(props);
         this.appWindow = AppWindowImpl.create(props);
         this.appWindow.setEventCallback(this.onEvent.bind(this));
+        this.#input = Input.create()
     }
 
     run(): void {
@@ -73,6 +78,7 @@ export class Application extends _Application {
     }
 
     // #region Private Fields
+    #input: Input;
     #running: boolean = true;
     #loop: Loop = Loop.create();
     //#endregion
