@@ -11,7 +11,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@hazel/hazel": "workspace:^"
+    "@hazel/hazel": "workspace:^",
+    "@hazel/share": "workspace:^"
   },
   "devDependencies": {
     "@hazel/tsconfig": "workspace:^"

@@ -1,11 +1,12 @@
-import * as _Hazel from "./Hazel";
-import * as Platform from "./Platform";
+export { Application } from "./Platform";
 
-export namespace Hazel {
-    export type WindowProps = _Hazel.WindowProps;
+export { getApp, type WindowProps } from "./Hazel";
 
-    export const Application = Platform.Application;
+export { Event, EventType, KeyEvent } from "./Hazel";
 
-    // To be defined in CLIENT
-    export type CreateApplication = (props: WindowProps) => _Hazel.Application;
-}
+export { Layer, DatGuiLayer } from "./Hazel";
+
+import { type WindowProps, Application } from "./Hazel";
+
+// To be defined in CLIENT
+export type CreateApplication = (props: WindowProps) => Application;

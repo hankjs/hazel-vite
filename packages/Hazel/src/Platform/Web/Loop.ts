@@ -1,24 +1,29 @@
 import { Loop as _Loop } from "../../Hazel/Loop";
 
+const noop = () => {};
+
 export class Loop extends _Loop {
 
     segment!: CallableFunction;
+    onStopped: CallableFunction = noop;
 
     constructor() {
         super();
     }
 
-    while(segment: CallableFunction) {
+    while(segment: CallableFunction, onStopped: CallableFunction = noop) {
         this.segment = segment;
-        window.requestAnimationFrame(this.tick.bind(this));
+        this.onStopped = onStopped;
+        window.requestAnimationFrame(this.nextTick.bind(this));
     }
 
-    async tick() {
+    async nextTick() {
         if (this.m_stop) {
+            this.onStopped();
             return;
         }
         await this.segment();
-        window.requestAnimationFrame(this.tick.bind(this));
+        window.requestAnimationFrame(this.nextTick.bind(this));
     }
 
     static create() {

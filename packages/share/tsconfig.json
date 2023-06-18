@@ -6,6 +6,7 @@
     "baseUrl": ".",
     "lib": [
       "ESNext",
+      "DOM"
     ],
     "types": [
       "@hazel/tsconfig"

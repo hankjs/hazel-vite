@@ -1,4 +1,4 @@
-import { Sandbox } from "@hazel/sandbox";
+import { createApplication } from "@hazel/sandbox";
 import { setupCanvas } from "./setup/setup-canvas";
 
 export function main() {
@@ -11,7 +11,7 @@ export function main() {
 
     setupCanvas(canvas);
 
-    const app = Sandbox.createApplication({
+    const app = createApplication({
         title: "Hazel",
         width: window.innerWidth,
         height: window.innerHeight,

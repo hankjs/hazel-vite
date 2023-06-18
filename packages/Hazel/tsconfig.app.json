@@ -13,7 +13,8 @@
     ],
     "types": [
       "vite",
-      "@hazel/tsconfig"
+      "@hazel/tsconfig",
+      "dat.gui"
     ],
   },
   "include": [

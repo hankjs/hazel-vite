@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "@rollup/pluginutils": "^5.0.2",
+    "@types/dat.gui": "^0.7.10",
     "@types/jsdom": "^21.1.1",
     "@types/node": "^20.2.1",
     "@vue/test-utils": "^2.3.2",

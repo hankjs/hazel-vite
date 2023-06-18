@@ -11,9 +11,11 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@hazel/tsconfig": "workspace:^"
+    "@hazel/tsconfig": "workspace:^",
+    "@types/dat.gui": "^0.7.10"
   },
   "dependencies": {
-    "@hazel/share": "workspace:^"
+    "@hazel/share": "workspace:^",
+    "dat.gui": "^0.7.9"
   }
 }
