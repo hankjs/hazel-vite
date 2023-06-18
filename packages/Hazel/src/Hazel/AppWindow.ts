@@ -1,5 +1,6 @@
 import { Event } from "./Events/Event";
 import { Lifecycle } from "./Lifecycle";
+import type { GraphicsContext } from "./Renderer";
 
 export interface WindowProps<E = Element> {
     title: string;
@@ -19,4 +20,8 @@ export abstract class AppWindow extends Lifecycle {
     abstract isVSync(): boolean 
 
     abstract getContainer(): any
+
+    //#region Private Fields
+    protected context!: GraphicsContext
+    //#endregion
 }

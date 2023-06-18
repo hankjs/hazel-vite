@@ -19,7 +19,7 @@ import {
     type EventCallBackFn,
     type WindowProps as _WindowProps,
 } from "@pw/Hazel/Hazel/AppWindow";
-import { GLContext } from "./GLContext";
+import { GraphicsContext } from "../Renderer";
 
 export type WindowProps = _WindowProps<HTMLCanvasElement>;
 
@@ -27,7 +27,6 @@ const noop = () => {};
 
 export class AppWindow extends _AppWindow {
     #container!: HTMLCanvasElement;
-    #glContext!: GLContext;
     isOutside = false;
 
     getContainer() {
@@ -85,13 +84,14 @@ export class AppWindow extends _AppWindow {
         this.#container.style.width = `${props.width}px`;
         this.#container.style.height = `${props.height}px`;
 
-        this.#glContext = new GLContext(this.#container);
-        this.#glContext.init();
+        this.context = new GraphicsContext(this.#container);
+        this.context.init();
 
         console.info(
             `Creating window ${props.title} ${props.width} ${props.height}`,
         );
 
+        //#region Bind Event Handlers
         const resizeHandler = () => {
             const rect = this.#container.getBoundingClientRect();
             const event = new WindowResizeEvent(rect.width, rect.height);
@@ -173,7 +173,9 @@ export class AppWindow extends _AppWindow {
             this.#data.eventCallback(new MouseMovedEvent(elX, elY));
         };
         document.addEventListener("mousemove", mousemoveHandler);
+        //#endregion
 
+        //#region Remove Event Handlers
         listenElementRemove(this.#container, () => {
             const event = new WindowCloseEvent();
             this.#data.eventCallback(event);
@@ -190,6 +192,7 @@ export class AppWindow extends _AppWindow {
             } as EventListenerOptions);
             document.removeEventListener("mousemove", mousemoveHandler);
         });
+        //#endregion
     }
     //#endregion
 

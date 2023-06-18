@@ -9,7 +9,11 @@ export class DatGuiLayer extends Layer {
     }
 
     onAttach(): void {
-        var gui = new dat.GUI({ load: getPresetJSON(), preset: "Hazel" });
+        var gui = new dat.GUI({
+            load: getPresetJSON(),
+            preset: "Hazel",
+            closed: true,
+        });
         this.#gui = gui;
 
         var object1 = {
@@ -119,8 +123,7 @@ export class DatGuiLayer extends Layer {
         this.#gui.destroy();
     }
     onUpdate(): void {}
-    onEvent(event: Event): void {
-    }
+    onEvent(event: Event): void {}
 
     //#region Private Fields
     // init onAttach

@@ -4,6 +4,7 @@ const PLATFORM = import.meta.env.VITE_PLATFORM;
 
 let modules: any;
 
+console.log(`[Core] Hazel init Platform: ${PLATFORM}`);
 switch (PLATFORM) {
     case "Web":
         modules = import.meta.glob(`./Web/*.ts`, { eager: true });
@@ -20,4 +21,5 @@ export const AppWindow = modules[`./${PLATFORM}/AppWindow.ts`]
     .AppWindow as typeof Hazel.AppWindow;
 
 export const Loop = modules[`./${PLATFORM}/Loop.ts`].Loop as typeof Hazel.Loop;
-export const Input = modules[`./${PLATFORM}/Input.ts`].Input as typeof Hazel.Input;
+export const Input = modules[`./${PLATFORM}/Input.ts`]
+    .Input as typeof Hazel.Input;

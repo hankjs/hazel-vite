@@ -88,5 +88,8 @@ export abstract class Application {
     layerStack: LayerStack
     // init in Platform
     protected appWindow!: AppWindow;
+    protected vertexArray!: number
+    protected vertexBuffer!: number
+    protected indexBuffer!: number
     //#endregion
 }

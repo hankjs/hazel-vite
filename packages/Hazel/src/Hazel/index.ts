@@ -6,3 +6,4 @@ export * from "./Layer";
 export * from "./Events";
 export * from "./Gui";
 export * from "./Input";
+export * from "./Renderer";

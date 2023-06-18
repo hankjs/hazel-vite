@@ -2,7 +2,7 @@
 
 interface ImportMetaEnv {
     VITE_PLATFORM: "Web";
-    VITE_GL_RENDER: "WebGL2";
+    VITE_RENDERER: "WebGL2";
 }
 
 interface ImportMeta {

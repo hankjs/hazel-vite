@@ -18,7 +18,6 @@ import {
 } from "@pw/Hazel/Hazel";
 import { AppWindow as AppWindowImpl, type WindowProps } from "./AppWindow";
 import { Loop } from "./Loop";
-import { gl } from "./GLContext";
 import { Input } from "./Input";
 
 export class Application extends _Application {
@@ -34,13 +33,10 @@ export class Application extends _Application {
     }
 
     run(): void {
-        console.log("Hazel Application running...");
+        console.log("[Application] Hazel Application running...");
         this.#running = true;
         this.#loop.while(
             () => {
-                gl.clearColor(0.1, 0.1, 0.1, 1.0);
-                gl.clear(gl.COLOR_BUFFER_BIT);
-
                 for (const layer of this.layerStack) {
                     layer.onUpdate();
                 }
