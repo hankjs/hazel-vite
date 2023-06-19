@@ -5,14 +5,13 @@ const PLATFORM = import.meta.env.VITE_PLATFORM;
 let modules: any;
 
 console.log(`[Core] Hazel init Platform: ${PLATFORM}`);
-switch (PLATFORM) {
-    case "Web":
-        modules = import.meta.glob(`./Web/*.ts`, { eager: true });
-        break;
-
-    default:
-        throw new Error(`Unsupported platform: ${PLATFORM}`);
+if (PLATFORM === "Web") {
+    modules = import.meta.glob(`./Web/*.ts`, { eager: true });
+} else {
+    throw new Error(`Unsupported platform: ${PLATFORM}`);
 }
+
+
 
 export const Application = modules[`./${PLATFORM}/Application.ts`]
     .Application as typeof Hazel.Application;
