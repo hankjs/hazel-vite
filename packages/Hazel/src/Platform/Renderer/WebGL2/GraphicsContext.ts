@@ -12,7 +12,7 @@ export class GraphicsContext extends _GraphicsContext<HTMLCanvasElement> {
         const context = this.container.getContext("webgl2");
         if (!context) {
             throw new Error(
-                "Failed to initialize WebGLContext: webgl2 not supports.",
+                "[Renderer] Failed to initialize WebGLContext: webgl2 not supports.",
             );
         }
         setGL(context);

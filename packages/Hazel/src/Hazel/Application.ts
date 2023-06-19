@@ -18,7 +18,7 @@ import type {
 } from "./Events";
 import type { Layer } from "./Layer";
 import { LayerStack } from "./LayerStack";
-import { Shader, gl } from "./Renderer";
+import { Shader } from "./Renderer";
 
 let app: Application;
 

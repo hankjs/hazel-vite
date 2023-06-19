@@ -4,7 +4,11 @@ export class Shader {
     constructor(vertexSource: string, fragmentSource: string) {
         // Create an empty vertex shader handle
         const vertexShader = compileShader(gl, gl.VERTEX_SHADER, vertexSource);
-        const fragmentShader = compileShader(gl, gl.FRAGMENT_SHADER, fragmentSource);
+        const fragmentShader = compileShader(
+            gl,
+            gl.FRAGMENT_SHADER,
+            fragmentSource,
+        );
         const program = createProgram(gl, vertexShader, fragmentShader);
 
         this.rendererID = program as number;
@@ -44,7 +48,7 @@ function compileShader(
     // Create the shader object
     var shader = gl.createShader(shaderType);
     if (!shader) {
-        throw "could not create Shader";
+        throw `[Renderer] could not create Shader: ${shaderType}`;
     }
 
     // Set the shader source code.
@@ -57,7 +61,9 @@ function compileShader(
     var success = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
     if (!success) {
         // Something went wrong during compilation; get the error
-        throw "could not compile shader:" + gl.getShaderInfoLog(shader);
+        throw (
+            "[Renderer] could not compile shader:" + gl.getShaderInfoLog(shader)
+        );
     }
 
     return shader;
@@ -79,7 +85,7 @@ function createProgram(
     // create a program.
     var program = gl.createProgram();
     if (!program) {
-        throw "could not create Shader";
+        throw "[Renderer] could not create WebGLProgram";
     }
 
     // attach the shaders.
@@ -93,7 +99,9 @@ function createProgram(
     var success = gl.getProgramParameter(program, gl.LINK_STATUS);
     if (!success) {
         // something went wrong with the link; get the error
-        throw "program failed to link:" + gl.getProgramInfoLog(program);
+        throw (
+            "[Renderer] program failed to link:" + gl.getProgramInfoLog(program)
+        );
     }
 
     return program;

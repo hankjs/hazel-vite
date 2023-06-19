@@ -15,6 +15,9 @@ export class LayerStack {
     pop() {
         return this.m_layers.pop();
     }
+    size() {
+        return this.m_layers.length;
+    }
 
     get begin() {
         return this.m_layers.at(0);
