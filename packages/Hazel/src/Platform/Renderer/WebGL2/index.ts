@@ -1,1 +1,1 @@
-export * from "./GraphicsContext";
+export * from "./WebGL2GraphicsContext";

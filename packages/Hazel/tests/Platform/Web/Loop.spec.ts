@@ -1,10 +1,10 @@
 import { describe, test, expect } from "vitest";
-import { Loop } from "@pw/Hazel/Platform/Web/Loop";
+import { WebLoop } from "src/Platform/Web/WebLoop";
 
 describe("Loop", () => {
     test("while", async () => {
         let count = 0;
-        const loop = Loop.create();
+        const loop = WebLoop.create();
         loop.while(async () => {
             count++;
             if (count === 10) {
@@ -19,7 +19,7 @@ describe("Loop", () => {
 
     test("done callback", () => {
         let count = 0;
-        const loop = Loop.create();
+        const loop = WebLoop.create();
         loop.while(() => {
             count++;
             if (count === 10) {

@@ -10,9 +10,9 @@ export abstract class Input extends Lifecycle {
         }
         instance = this;
     }
-    static create(): Input {
-        throw new Error("Method not implemented.");
-    }
+
+    static create: () => Input 
+
     static isKeyPressed(keycode: number): boolean {
         return instance.isKeyPressedImpl(keycode);
     }

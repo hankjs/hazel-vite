@@ -1,10 +1,8 @@
 import {
-    Application as _Application,
     AppRenderEvent,
     AppTickEvent,
     AppUpdateEvent,
     Event,
-    gl,
     KeyEvent,
     KeyPressedEvent,
     KeyReleasedEvent,
@@ -18,26 +16,29 @@ import {
     WindowCloseEvent,
     WindowResizeEvent,
 } from "@pw/Hazel/Hazel";
-import { AppWindow as AppWindowImpl, type WindowProps } from "./AppWindow";
-import { Loop } from "./Loop";
-import { Input } from "./Input";
+import { Application as _Application } from "@pw/Hazel/Hazel/Application";
+import {
+    WebAppWindow as AppWindowImpl,
+    type WindowProps,
+} from "./WebAppWindow";
+import { WebLoop } from "./WebLoop";
+import { WebInput } from "./WebInput";
+import { IndexBuffer, VertexBuffer } from "@pw/Hazel/Hazel/Renderer/Buffer";
+import { gl } from "@pw/Hazel/Platform/Renderer/WebGL2/gl";
 
-export class Application extends _Application {
+export class WebApplication extends _Application {
     static getInstance(): _Application {
-        return _Application.getInstance()
+        return _Application.getInstance();
     }
 
     constructor(props: WindowProps) {
         super(props);
         this.appWindow = AppWindowImpl.create(props);
         this.appWindow.setEventCallback(this.onEvent.bind(this));
-        this.#input = Input.create()
+        this.#input = WebInput.create();
 
         this.vertexArray = gl.createVertexArray() as number;
         gl.bindVertexArray(this.vertexArray);
-
-        const vertexBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
 
         // prettier-ignore
         const vertices= new Float32Array([
@@ -46,7 +47,7 @@ export class Application extends _Application {
 			 0.0,  0.5, 0.0
 		]);
 
-        gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+        this.#vertexBuffer = VertexBuffer.create(vertices, vertices.byteLength);
 
         gl.enableVertexAttribArray(0);
         gl.vertexAttribPointer(
@@ -58,11 +59,8 @@ export class Application extends _Application {
             0,
         );
 
-        const indexBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-
         const indices = new Uint16Array([0, 1, 2]);
-        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
+        this.#indexBuffer = IndexBuffer.create(indices, indices.length);
 
         const vertexSrc = `#version 300 es
             precision highp float;
@@ -91,7 +89,7 @@ export class Application extends _Application {
 			}
 		`;
 
-        this.shader = new Shader(vertexSrc, fragmentSrc);
+        this.shader = Shader.create(vertexSrc, fragmentSrc);
     }
 
     run(): void {
@@ -103,7 +101,12 @@ export class Application extends _Application {
                 gl.clear(gl.COLOR_BUFFER_BIT);
                 this.shader.bind();
                 gl.bindVertexArray(this.vertexArray);
-                gl.drawElements(gl.TRIANGLES, 3, gl.UNSIGNED_SHORT, 0);
+                gl.drawElements(
+                    gl.TRIANGLES,
+                    this.#indexBuffer.getCount(),
+                    gl.UNSIGNED_SHORT,
+                    0,
+                );
 
                 for (const layer of this.layerStack) {
                     layer.onUpdate();
@@ -142,8 +145,11 @@ export class Application extends _Application {
     }
 
     // #region Private Fields
-    #input: Input;
+    #input: WebInput;
     #running: boolean = true;
-    #loop: Loop = Loop.create();
+    #loop: WebLoop = WebLoop.create();
+
+    #vertexBuffer: VertexBuffer;
+    #indexBuffer: IndexBuffer;
     //#endregion
 }

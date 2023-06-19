@@ -25,11 +25,12 @@ let app: Application;
 export function setApp(instance: Application) {
     app = instance;
 }
+
 /**
  * Hazel export Application is Platform Implemented.
  * here is the interface for the Application class.
  */
-export abstract class Application {
+export class Application {
     constructor(props: WindowProps) {
         if (app) {
             throw new Error("Application already exists!");

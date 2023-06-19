@@ -2,7 +2,7 @@ import { Loop as _Loop } from "../../Hazel/Loop";
 
 const noop = () => {};
 
-export class Loop extends _Loop {
+export class WebLoop extends _Loop {
 
     segment!: CallableFunction;
     onStopped: CallableFunction = noop;
@@ -27,6 +27,6 @@ export class Loop extends _Loop {
     }
 
     static create() {
-        return new Loop();
+        return new WebLoop();
     }
 }

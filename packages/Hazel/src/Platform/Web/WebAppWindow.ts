@@ -19,13 +19,13 @@ import {
     type EventCallBackFn,
     type WindowProps as _WindowProps,
 } from "@pw/Hazel/Hazel/AppWindow";
-import { GraphicsContext } from "../Renderer";
+import { GraphicsContext } from "@pw/Hazel/Hazel/Renderer";
 
 export type WindowProps = _WindowProps<HTMLCanvasElement>;
 
 const noop = () => {};
 
-export class AppWindow extends _AppWindow {
+export class WebAppWindow extends _AppWindow {
     #container!: HTMLCanvasElement;
     isOutside = false;
 
@@ -34,7 +34,7 @@ export class AppWindow extends _AppWindow {
     }
 
     static create(props: WindowProps): _AppWindow {
-        return new AppWindow(props);
+        return new WebAppWindow(props);
     }
 
     getWidth(): number {
@@ -84,7 +84,7 @@ export class AppWindow extends _AppWindow {
         this.#container.style.width = `${props.width}px`;
         this.#container.style.height = `${props.height}px`;
 
-        this.context = new GraphicsContext(this.#container);
+        this.context = GraphicsContext.create(this.#container);
         this.context.init();
 
         console.info(

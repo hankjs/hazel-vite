@@ -1,15 +1,15 @@
 import { key2Num } from "@hazel/share/src";
 import { Input as _Input } from "@pw/Hazel/Hazel/Input";
-import { Application } from "./Application";
+import { WebApplication } from "./WebApplication";
 
-export class Input extends _Input {
+export class WebInput extends _Input {
     constructor() {
         super();
         this.onAttach();
     }
 
-    static create(): Input {
-        return new Input();
+    static create(): WebInput {
+        return new WebInput();
     }
     
     //#region overrides for _Input
@@ -92,7 +92,7 @@ export class Input extends _Input {
         this.#button.delete(event.button);
     };
     private mousemoveHandler = (event: MouseEvent) => {
-        const app = Application.getInstance() as Application;
+        const app = WebApplication.getInstance() as WebApplication;
         const { left, top } = app.getAppWindow().getContainer().getBoundingClientRect();
 
         const elementPositionX = left + window.pageXOffset;
