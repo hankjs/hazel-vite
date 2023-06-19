@@ -1,7 +1,7 @@
 import { test, expect, beforeEach } from "vitest";
-import { WebApplication } from "src/Platform/Web/WebApplication";
-import { setApp } from "@pw/Hazel/Hazel";
+import { WebApplication } from "@pw/Hazel/Platform/Web/WebApplication";
 import { JSDOM } from "jsdom";
+import { setApp } from "@pw/Hazel/Hazel/Application";
 
 const dom = new JSDOM(`<!DOCTYPE html><canvas id="canvas"></canvas>`);
 

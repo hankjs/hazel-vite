@@ -1,7 +1,8 @@
-import { GraphicsContext as _GraphicsContext } from "@pw/Hazel/Hazel/Renderer";
+import { GraphicsContext } from "@pw/Hazel/Hazel/Renderer/GraphicsContext";
 import { setGL } from "./gl";
 
-export class WebGL2GraphicsContext extends _GraphicsContext<HTMLCanvasElement> {
+console.log("GraphicsContext", GraphicsContext);
+export class WebGL2GraphicsContext extends GraphicsContext<HTMLCanvasElement> {
     constructor(canvas?: HTMLElement) {
         if (!canvas || canvas.tagName !== "CANVAS") {
             canvas = document.createElement("canvas");

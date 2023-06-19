@@ -1,30 +1,46 @@
+//#region Hazel
+import { Event } from "@pw/Hazel/Hazel/Events/Event";
 import {
-    AppRenderEvent,
-    AppTickEvent,
-    AppUpdateEvent,
-    Event,
     KeyEvent,
     KeyPressedEvent,
     KeyReleasedEvent,
     KeyTypedEvent,
+} from "@pw/Hazel/Hazel/Events/KeyEvent";
+import {
     MouseButtonEvent,
     MouseButtonPressedEvent,
     MouseButtonReleasedEvent,
     MouseMovedEvent,
     MouseScrolledEvent,
-    Shader,
+} from "@pw/Hazel/Hazel/Events/MouseEvent";
+import {
     WindowCloseEvent,
     WindowResizeEvent,
-} from "@pw/Hazel/Hazel";
+} from "@pw/Hazel/Hazel/Events/ApplicationEvent";
+import {
+    AppRenderEvent,
+    AppTickEvent,
+    AppUpdateEvent,
+} from "@pw/Hazel/Hazel/Events/ApplicationEvent";
+import { Shader } from "@pw/Hazel/Hazel/Renderer/Shader";
 import { Application as _Application } from "@pw/Hazel/Hazel/Application";
+import {
+    BufferElement,
+    BufferLayout,
+    IndexBuffer,
+    ShaderDataType,
+    VertexBuffer,
+} from "@pw/Hazel/Hazel/Renderer/Buffer";
+//#endregion
+
+import { gl } from "@pw/Hazel/Platform/Renderer/WebGL2/gl";
+
 import {
     WebAppWindow as AppWindowImpl,
     type WindowProps,
 } from "./WebAppWindow";
 import { WebLoop } from "./WebLoop";
 import { WebInput } from "./WebInput";
-import { IndexBuffer, VertexBuffer } from "@pw/Hazel/Hazel/Renderer/Buffer";
-import { gl } from "@pw/Hazel/Platform/Renderer/WebGL2/gl";
 
 export class WebApplication extends _Application {
     static getInstance(): _Application {
@@ -48,6 +64,10 @@ export class WebApplication extends _Application {
 		]);
 
         this.#vertexBuffer = VertexBuffer.create(vertices, vertices.byteLength);
+
+        const bufferLayout = new BufferLayout([
+            new BufferElement(ShaderDataType.Float3, "a_Position"),
+        ]);
 
         gl.enableVertexAttribArray(0);
         gl.vertexAttribPointer(

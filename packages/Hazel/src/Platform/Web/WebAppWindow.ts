@@ -19,7 +19,7 @@ import {
     type EventCallBackFn,
     type WindowProps as _WindowProps,
 } from "@pw/Hazel/Hazel/AppWindow";
-import { GraphicsContext } from "@pw/Hazel/Hazel/Renderer";
+import { GraphicsContext } from "@pw/Hazel/Hazel/Renderer/GraphicsContext";
 
 export type WindowProps = _WindowProps<HTMLCanvasElement>;
 
