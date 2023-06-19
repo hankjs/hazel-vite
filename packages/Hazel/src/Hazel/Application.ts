@@ -18,6 +18,7 @@ import type {
 } from "./Events";
 import type { Layer } from "./Layer";
 import { LayerStack } from "./LayerStack";
+import { Shader, gl } from "./Renderer";
 
 let app: Application;
 
@@ -75,21 +76,22 @@ export abstract class Application {
     //#region Public Methods
     pushLayer(layer: Layer): void {
         this.layerStack.push(layer);
-		layer.onAttach();
+        layer.onAttach();
     }
 
     pushOverlay(layer: Layer): void {
         this.layerStack.push(layer);
-		layer.onAttach();
+        layer.onAttach();
     }
     //#endregion
 
     //#region Private Fields
-    layerStack: LayerStack
+    layerStack: LayerStack;
     // init in Platform
     protected appWindow!: AppWindow;
-    protected vertexArray!: number
-    protected vertexBuffer!: number
-    protected indexBuffer!: number
+    protected vertexArray!: number;
+    protected vertexBuffer!: number;
+    protected indexBuffer!: number;
+    protected shader!: Shader;
     //#endregion
 }

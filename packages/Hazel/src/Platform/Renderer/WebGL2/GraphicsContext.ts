@@ -1,19 +1,4 @@
-import { GraphicsContext as _GraphicsContext } from "@pw/Hazel/Hazel/Renderer";
-
-export let gl: WebGL2RenderingContext;
-
-function setGL(context: WebGL2RenderingContext) {
-    gl = new Proxy(context, {
-        get(target, key, receiver) {
-            const ret = Reflect.get(target, key, receiver);
-            if (typeof ret === "function") {
-                return ret.bind(target);
-            }
-
-            return ret;
-        },
-    });
-}
+import { GraphicsContext as _GraphicsContext, setGL } from "@pw/Hazel/Hazel/Renderer";
 
 export class GraphicsContext extends _GraphicsContext<HTMLCanvasElement> {
     constructor(canvas?: HTMLElement) {
