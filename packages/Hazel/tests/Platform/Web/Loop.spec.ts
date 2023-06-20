@@ -1,5 +1,5 @@
 import { describe, test, expect } from "vitest";
-import { WebLoop } from "src/Platform/Web/WebLoop";
+import { WebLoop } from "@pw/Hazel/Platform/Web/WebLoop";
 
 describe("Loop", () => {
     test("while", async () => {
