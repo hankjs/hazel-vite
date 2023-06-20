@@ -19,6 +19,10 @@ export class WebGL2VertexArray extends VertexArray {
     }
 
     addVertexBuffer(vertexBuffer: VertexBuffer): void {
+        if (vertexBuffer.getLayout().getElements().length === 0) {
+            throw new Error("Vertex Buffer has no layout!");
+        }
+
         gl.bindVertexArray(this.#rendererID);
         vertexBuffer.bind();
 
@@ -45,6 +49,14 @@ export class WebGL2VertexArray extends VertexArray {
         indexBuffer.bind();
 
         this.#indexBuffer = indexBuffer;
+    }
+
+    getVertexBuffers(): VertexBuffer[] {
+        return this.#vertexBuffers;
+    }
+
+    getIndexBuffer(): IndexBuffer {
+        return this.#indexBuffer;
     }
 
     //#region Private Fields

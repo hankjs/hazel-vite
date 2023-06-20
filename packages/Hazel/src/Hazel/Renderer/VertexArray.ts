@@ -16,5 +16,13 @@ export class VertexArray {
         throw new Error("Method not implemented.");
     }
 
+    getVertexBuffers(): VertexBuffer[] {
+        throw new Error("Method not implemented.");
+    }
+
+    getIndexBuffer(): IndexBuffer {
+        throw new Error("Method not implemented.");
+    }
+
     static create: () => VertexArray;
 }
