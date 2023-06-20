@@ -15,7 +15,6 @@ import {
     Shader,
     RenderCommand,
     Renderer,
-    AppUpdateEvent,
 } from "@hazel/hazel";
 import { KeyCodes } from "@hazel/share";
 
@@ -39,8 +38,8 @@ class WebGL2Layer extends Layer {
 
         this.vertexBuffer.setLayout(
             BufferLayout.create([
-                new BufferElement(ShaderDataType.Float3, "a_Position"),
-                new BufferElement(ShaderDataType.Float4, "a_Color"),
+                BufferElement.create(ShaderDataType.Float3, "a_Position"),
+                BufferElement.create(ShaderDataType.Float4, "a_Color"),
             ]),
         );
         this.vertexArray.addVertexBuffer(this.vertexBuffer);
@@ -66,7 +65,7 @@ class WebGL2Layer extends Layer {
 
         this.squareVB.setLayout(
             BufferLayout.create([
-                new BufferElement(ShaderDataType.Float3, "a_Position"),
+                BufferElement.create(ShaderDataType.Float3, "a_Position"),
             ]),
         );
         this.squareVA.addVertexBuffer(this.squareVB);

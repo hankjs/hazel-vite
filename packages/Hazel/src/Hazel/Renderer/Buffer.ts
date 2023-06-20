@@ -39,6 +39,14 @@ export class BufferElement {
     offset: number = 0;
     normalized: boolean = false;
 
+    static create(
+        type: ShaderDataType,
+        name: string,
+        normalized: boolean = false,
+    ): BufferElement {
+        return new BufferElement(type, name, normalized);
+    }
+
     constructor(type: ShaderDataType, name: string, normalized = false) {
         this.name = name;
         this.type = type;
