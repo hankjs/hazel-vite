@@ -22,8 +22,8 @@ import {
     AppTickEvent,
     AppUpdateEvent,
 } from "@pw/Hazel/Hazel/Events/ApplicationEvent";
-import { Shader } from "@pw/Hazel/Hazel/Renderer/Shader";
 import { Application as _Application } from "@pw/Hazel/Hazel/Application";
+import { Shader } from "@pw/Hazel/Hazel/Renderer/Shader";
 import {
     BufferElement,
     BufferLayout,
@@ -31,9 +31,12 @@ import {
     ShaderDataType,
     VertexBuffer,
 } from "@pw/Hazel/Hazel/Renderer/Buffer";
+import { VertexArray } from "@pw/Hazel/Hazel/Renderer/VertexArray";
 //#endregion
 
-import { gl } from "@pw/Hazel/Platform/Renderer/WebGL2/gl";
+import {
+    gl,
+} from "@pw/Hazel/Platform/Renderer/WebGL2/gl";
 
 import {
     WebAppWindow as AppWindowImpl,
@@ -53,45 +56,41 @@ export class WebApplication extends _Application {
         this.appWindow.setEventCallback(this.onEvent.bind(this));
         this.#input = WebInput.create();
 
-        this.vertexArray = gl.createVertexArray() as number;
-        gl.bindVertexArray(this.vertexArray);
+        this.vertexArray = VertexArray.create();
+        this.vertexArray.bind();
 
         // prettier-ignore
         const vertices= new Float32Array([
-			-0.5, -0.5, 0.0,
-			 0.5, -0.5, 0.0,
-			 0.0,  0.5, 0.0
+			-0.5, -0.5, 0.0, 0.8, 0.2, 0.8, 1.0,
+			 0.5, -0.5, 0.0, 0.2, 0.3, 0.8, 1.0,
+			 0.0,  0.5, 0.0, 0.8, 0.8, 0.2, 1.0,
 		]);
 
-        this.#vertexBuffer = VertexBuffer.create(vertices, vertices.byteLength);
+        this.vertexBuffer = VertexBuffer.create(vertices, vertices.byteLength);
 
-        const bufferLayout = new BufferLayout([
+        this.vertexBuffer.setLayout(BufferLayout.create([
             new BufferElement(ShaderDataType.Float3, "a_Position"),
-        ]);
-
-        gl.enableVertexAttribArray(0);
-        gl.vertexAttribPointer(
-            0,
-            3,
-            gl.FLOAT,
-            false,
-            3 * Float32Array.BYTES_PER_ELEMENT,
-            0,
-        );
+            new BufferElement(ShaderDataType.Float4, "a_Color"),
+        ]));
+        this.vertexArray.addVertexBuffer(this.vertexBuffer);
 
         const indices = new Uint16Array([0, 1, 2]);
-        this.#indexBuffer = IndexBuffer.create(indices, indices.length);
+        this.indexBuffer = IndexBuffer.create(indices, indices.length);
+        this.vertexArray.addIndexBuffer(this.indexBuffer);
 
         const vertexSrc = `#version 300 es
             precision highp float;
 			
 			layout(location = 0) in vec3 a_Position;
+			layout(location = 1) in vec4 a_Colot;
 
 			out vec3 v_Position;
+			out vec4 v_Color;
 
 			void main()
 			{
 				v_Position = a_Position;
+                v_Color = a_Colot;
 				gl_Position = vec4(a_Position, 1.0);	
 			}
 		`;
@@ -102,10 +101,12 @@ export class WebApplication extends _Application {
 			out vec4 color;
 
 			in vec3 v_Position;
+			in vec4 v_Color;
 
 			void main()
 			{
 				color = vec4(v_Position * 0.5 + 0.5, 1.0);
+                color = v_Color;
 			}
 		`;
 
@@ -119,11 +120,13 @@ export class WebApplication extends _Application {
             () => {
                 gl.clearColor(0.1, 0.1, 0.1, 1);
                 gl.clear(gl.COLOR_BUFFER_BIT);
+
                 this.shader.bind();
-                gl.bindVertexArray(this.vertexArray);
+                this.vertexArray.bind()
+
                 gl.drawElements(
                     gl.TRIANGLES,
-                    this.#indexBuffer.getCount(),
+                    this.indexBuffer.getCount(),
                     gl.UNSIGNED_SHORT,
                     0,
                 );
@@ -169,7 +172,5 @@ export class WebApplication extends _Application {
     #running: boolean = true;
     #loop: WebLoop = WebLoop.create();
 
-    #vertexBuffer: VertexBuffer;
-    #indexBuffer: IndexBuffer;
     //#endregion
 }

@@ -19,6 +19,8 @@ import type {
 import type { Layer } from "./Layer";
 import { LayerStack } from "./LayerStack";
 import { Shader } from "./Renderer";
+import type { IndexBuffer, VertexBuffer } from "./Renderer/Buffer";
+import type { VertexArray } from "./Renderer/VertexArray";
 
 let app: Application;
 
@@ -90,9 +92,9 @@ export class Application {
     layerStack: LayerStack;
     // init in Platform
     protected appWindow!: AppWindow;
-    protected vertexArray!: number;
-    protected vertexBuffer!: number;
-    protected indexBuffer!: number;
+    protected vertexArray!: VertexArray;
+    protected vertexBuffer!: VertexBuffer;
+    protected indexBuffer!: IndexBuffer;
     protected shader!: Shader;
     //#endregion
 }

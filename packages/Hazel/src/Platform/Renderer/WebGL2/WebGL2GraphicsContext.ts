@@ -1,7 +1,6 @@
 import { GraphicsContext } from "@pw/Hazel/Hazel/Renderer/GraphicsContext";
 import { setGL } from "./gl";
 
-console.log("GraphicsContext", GraphicsContext);
 export class WebGL2GraphicsContext extends GraphicsContext<HTMLCanvasElement> {
     constructor(canvas?: HTMLElement) {
         if (!canvas || canvas.tagName !== "CANVAS") {

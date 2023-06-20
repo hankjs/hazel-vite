@@ -1,6 +1,8 @@
 import { Renderer, RendererAPI } from "./Renderer";
 import { GraphicsContext } from "./GraphicsContext";
 import { IndexBuffer, VertexBuffer } from "./Buffer";
+import { Shader } from "./Shader";
+import { VertexArray } from "./VertexArray";
 
 //#region Renderer WebGL2
 import { WebGL2GraphicsContext } from "@pw/Hazel/Platform/Renderer/WebGL2/WebGL2GraphicsContext";
@@ -9,7 +11,7 @@ import {
     WebGL2IndexBuffer,
 } from "@pw/Hazel/Platform/Renderer/WebGL2/WebGL2Buffer";
 import { WebGL2Shader } from "@pw/Hazel/Platform/Renderer/WebGL2/WebGL2Shader";
-import { Shader } from "./Shader";
+import { WebGL2VertexArray } from "@pw/Hazel/Platform/Renderer/WebGL2/WebGL2VertexArray";
 //#endregion
 
 export * from "./Shader";
@@ -55,6 +57,15 @@ Shader.create = function create(
 ): Shader {
     if (Renderer.getAPI() === RendererAPI.WebGL2) {
         return new WebGL2Shader(vertexSource, fragmentSource);
+    }
+
+    // @ts-expect-error error build
+    return null;
+};
+
+VertexArray.create = function create(): VertexArray {
+    if (Renderer.getAPI() === RendererAPI.WebGL2) {
+        return new WebGL2VertexArray();
     }
 
     // @ts-expect-error error build
