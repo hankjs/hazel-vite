@@ -1,20 +1,6 @@
 import type { AppWindow, WindowProps } from "./AppWindow";
 import type {
-    AppRenderEvent,
-    AppTickEvent,
-    AppUpdateEvent,
     Event,
-    KeyEvent,
-    KeyPressedEvent,
-    KeyReleasedEvent,
-    KeyTypedEvent,
-    MouseButtonEvent,
-    MouseButtonPressedEvent,
-    MouseButtonReleasedEvent,
-    MouseMovedEvent,
-    MouseScrolledEvent,
-    WindowCloseEvent,
-    WindowResizeEvent,
 } from "./Events";
 import type { Layer } from "./Layer";
 import { LayerStack } from "./LayerStack";
@@ -55,24 +41,7 @@ export class Application {
     }
 
     // implements in Client
-    onEvent(
-        event:
-            | Event
-            | WindowResizeEvent
-            | WindowCloseEvent
-            | AppTickEvent
-            | AppUpdateEvent
-            | AppRenderEvent
-            | KeyEvent
-            | KeyPressedEvent
-            | KeyReleasedEvent
-            | KeyTypedEvent
-            | MouseMovedEvent
-            | MouseScrolledEvent
-            | MouseButtonEvent
-            | MouseButtonPressedEvent
-            | MouseButtonReleasedEvent,
-    ) {
+    onEvent(event: Event) {
         throw new Error("Method not implemented.");
     }
 
@@ -92,9 +61,5 @@ export class Application {
     layerStack: LayerStack;
     // init in Platform
     protected appWindow!: AppWindow;
-    protected vertexArray!: VertexArray;
-    protected vertexBuffer!: VertexBuffer;
-    protected indexBuffer!: IndexBuffer;
-    protected shader!: Shader;
     //#endregion
 }

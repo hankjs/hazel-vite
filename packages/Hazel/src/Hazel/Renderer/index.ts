@@ -1,3 +1,4 @@
+import { Renderer } from "./Renderer";
 import { RendererAPI, API } from "./RendererAPI";
 import { GraphicsContext } from "./GraphicsContext";
 import { IndexBuffer, VertexBuffer } from "./Buffer";
@@ -16,8 +17,7 @@ import { WebGL2VertexArray } from "@pw/Hazel/Platform/Renderer/WebGL2/WebGL2Vert
 import { WebGL2RendererAPI } from "@pw/Hazel/Platform/Renderer/WebGL2/WebGL2RendererAPI";
 //#endregion
 
-export * from "./Shader";
-
+//#region dynamic
 GraphicsContext.create = function create<E extends HTMLElement = HTMLElement>(
     el: E,
 ): GraphicsContext {
@@ -28,7 +28,6 @@ GraphicsContext.create = function create<E extends HTMLElement = HTMLElement>(
     // @ts-expect-error error build
     return null;
 };
-export { GraphicsContext };
 
 VertexBuffer.create = function create(
     vertices: ArrayBufferView,
@@ -82,4 +81,19 @@ RenderCommand.init = function init(): void {
     // @ts-expect-error error build
     return null;
 };
-RenderCommand.init()
+RenderCommand.init();
+//#endregion
+
+//#region export
+export { GraphicsContext, IndexBuffer, VertexBuffer, Shader, VertexArray };
+
+export { Renderer, RendererAPI, RenderCommand };
+
+export * from "./Shader";
+export {
+    BufferElement,
+    BufferLayout,
+    ShaderDataType,
+    shaderDataTypeSize,
+} from "./Buffer";
+//#endregion

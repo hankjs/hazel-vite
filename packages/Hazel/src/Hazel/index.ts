@@ -8,7 +8,7 @@ export * from "./Input";
 export * from "./Renderer";
 
 import { Application as _Application } from "./Application";
-import { AppWindow, type WindowProps } from "./AppWindow";
+import { AppWindow, } from "./AppWindow";
 import { Loop } from "./Loop";
 import { Input } from "./Input";
 
