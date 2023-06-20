@@ -34,14 +34,14 @@ import {
 import { VertexArray } from "@pw/Hazel/Hazel/Renderer/VertexArray";
 //#endregion
 
-import { gl } from "@pw/Hazel/Platform/Renderer/WebGL2/gl";
-
 import {
     WebAppWindow as AppWindowImpl,
     type WindowProps,
 } from "./WebAppWindow";
 import { WebLoop } from "./WebLoop";
 import { WebInput } from "./WebInput";
+import { RenderCommand } from "@pw/Hazel/Hazel/Renderer/RenderCommand";
+import { Renderer } from "@pw/Hazel/Hazel/Renderer/Renderer";
 
 export class WebApplication extends _Application {
     static getInstance(): _Application {
@@ -74,7 +74,7 @@ export class WebApplication extends _Application {
         );
         this.vertexArray.addVertexBuffer(this.vertexBuffer);
 
-        const indices = new Uint16Array([0, 1, 2]);
+        const indices = new Uint32Array([0, 1, 2]);
         this.indexBuffer = IndexBuffer.create(indices, indices.length);
         this.vertexArray.addIndexBuffer(this.indexBuffer);
 
@@ -100,7 +100,7 @@ export class WebApplication extends _Application {
         );
         this.squareVA.addVertexBuffer(this.squareVB);
 
-        const squareIndices = new Uint16Array([0, 1, 2, 2, 3, 0]);
+        const squareIndices = new Uint32Array([0, 1, 2, 2, 3, 0]);
         this.squareIB = IndexBuffer.create(squareIndices, squareIndices.length);
         this.squareVA.addIndexBuffer(this.squareIB);
 
@@ -173,28 +173,17 @@ export class WebApplication extends _Application {
         this.#running = true;
         this.#loop.while(
             () => {
-                gl.clearColor(0.1, 0.1, 0.1, 1);
-                gl.clear(gl.COLOR_BUFFER_BIT);
+                RenderCommand.setClearColor([0.1, 0.1, 0.1, 1]);
+                RenderCommand.clear();
 
+                Renderer.beginScene()
                 this.squareShader.bind();
-                this.squareVA.bind();
-                
-                gl.drawElements(
-                    gl.TRIANGLES,
-                    this.squareVA.getIndexBuffer().getCount(),
-                    gl.UNSIGNED_SHORT,
-                    0,
-                );
+                Renderer.submit(this.squareVA);
 
                 this.shader.bind();
-                this.vertexArray.bind();
+                Renderer.submit(this.vertexArray);
 
-                gl.drawElements(
-                    gl.TRIANGLES,
-                    this.vertexArray.getIndexBuffer().getCount(),
-                    gl.UNSIGNED_SHORT,
-                    0,
-                );
+                Renderer.endScene()
 
                 for (const layer of this.layerStack) {
                     layer.onUpdate();

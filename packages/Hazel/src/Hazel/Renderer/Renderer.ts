@@ -1,14 +1,16 @@
-export enum RendererAPI {
-    None = 0,
-    WebGL = "WebGL",
-    WebGL2 = "WebGL2",
-    WebGPU = "WebGPU",
-}
+import { RenderCommand } from "./RenderCommand";
+import type { VertexArray } from "./VertexArray";
 
-let s_RendererAPI: RendererAPI = import.meta.env.VITE_RENDERER as RendererAPI;
 
 export class Renderer {
-    static getAPI(): RendererAPI {
-        return s_RendererAPI;
+    static beginScene(): void {
+    }
+
+    static endScene(): void {
+    }
+
+    static submit(vertexArray: VertexArray): void {
+        vertexArray.bind();
+        RenderCommand.drawIndexed(vertexArray);
     }
 }
