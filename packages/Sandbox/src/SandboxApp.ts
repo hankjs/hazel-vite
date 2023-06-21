@@ -2,7 +2,6 @@ import {
     Layer,
     Event,
     EventType,
-    KeyEvent,
     Application,
     type WindowProps,
     DatGuiLayer,
@@ -16,8 +15,8 @@ import {
     RenderCommand,
     Renderer,
     OrthographicCamera,
+    WindowResizeEvent,
 } from "@hazel/hazel";
-import { KeyCodes } from "@hazel/share";
 
 class WebGL2Layer extends Layer {
     constructor(name: string = "WebGL2") {
@@ -161,11 +160,12 @@ class WebGL2Layer extends Layer {
     }
 
     onEvent(event: Event): void {
-        if (event.getType() === EventType.KeyPressed) {
-            const e = event as KeyEvent;
-            if (e.getKeyCode() === KeyCodes.KeyS) {
-                console.info("KeyS key is pressed (event)!");
-            }
+        if (event.getType() === EventType.WindowResize) {
+            console.log(event);
+            const resizeEvent = event as WindowResizeEvent;
+            console.log("resizeEvent.getWidth()", resizeEvent.getWidth());
+            console.log("resizeEvent.getHeight()", resizeEvent.getHeight());
+            Renderer.setViewport(0, 0, resizeEvent.getWidth(), resizeEvent.getHeight());
         }
     }
 

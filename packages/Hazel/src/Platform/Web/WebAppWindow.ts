@@ -1,4 +1,5 @@
 import { listenElementRemove } from "@hazel/share";
+import { EventType, type Event } from "@pw/Hazel/Hazel/Events/Event";
 import {
     WindowCloseEvent,
     WindowResizeEvent,
@@ -15,7 +16,7 @@ import {
     MouseScrolledEvent,
 } from "@pw/Hazel/Hazel/Events/MouseEvent";
 import {
-    AppWindow as _AppWindow,
+    AppWindow,
     type EventCallBackFn,
     type WindowProps as _WindowProps,
 } from "@pw/Hazel/Hazel/AppWindow";
@@ -25,15 +26,12 @@ export type WindowProps = _WindowProps<HTMLCanvasElement>;
 
 const noop = () => {};
 
-export class WebAppWindow extends _AppWindow {
-    #container!: HTMLCanvasElement;
-    isOutside = false;
-
+export class WebAppWindow extends AppWindow {
     getContainer() {
-        return this.#container;
+        return this.#canvas;
     }
 
-    static create(props: WindowProps): _AppWindow {
+    static create(props: WindowProps): AppWindow {
         return new WebAppWindow(props);
     }
 
@@ -76,15 +74,16 @@ export class WebAppWindow extends _AppWindow {
             }
             el = canvas as HTMLCanvasElement;
         }
-        this.#container = el;
+        this.#canvas = el;
+        this.#container = this.#canvas.parentElement || document.body;
         this.#data.title = props.title;
         this.#data.width = props.width;
         this.#data.height = props.height;
 
-        this.#container.style.width = `${props.width}px`;
-        this.#container.style.height = `${props.height}px`;
+        this.#canvas.style.width = `${props.width}px`;
+        this.#canvas.style.height = `${props.height}px`;
 
-        this.context = GraphicsContext.create(this.#container);
+        this.context = GraphicsContext.create(this.#canvas);
         this.context.init();
 
         console.info(
@@ -94,57 +93,52 @@ export class WebAppWindow extends _AppWindow {
         //#region Bind Event Handlers
         const resizeHandler = () => {
             const rect = this.#container.getBoundingClientRect();
-            const event = new WindowResizeEvent(rect.width, rect.height);
-            this.#data.eventCallback(event);
+            this.handleEvent(new WindowResizeEvent(rect.width, rect.height));
         };
         window.addEventListener("resize", resizeHandler);
 
         const keydownHandler = (event: KeyboardEvent) => {
-            if (this.isOutside) return;
-            this.#data.eventCallback(
-                new KeyPressedEvent(event.code, event.repeat),
-            );
+            if (this.#isOutside) return;
+            this.handleEvent(new KeyPressedEvent(event.code, event.repeat));
         };
         document.addEventListener("keydown", keydownHandler);
 
         const keypressHandler = (event: KeyboardEvent) => {
-            if (this.isOutside) return;
-            this.#data.eventCallback(new KeyTypedEvent(event.code));
+            if (this.#isOutside) return;
+            this.handleEvent(new KeyTypedEvent(event.code));
         };
         document.addEventListener("keypress", keypressHandler);
 
         const keyupHandler = (event: KeyboardEvent) => {
-            if (this.isOutside) return;
-            this.#data.eventCallback(new KeyReleasedEvent(event.code));
+            if (this.#isOutside) return;
+            this.handleEvent(new KeyReleasedEvent(event.code));
         };
         document.addEventListener("keyup", keyupHandler);
 
         const mousedownHandler = (event: MouseEvent) => {
-            if (this.isOutside) return;
-            this.#data.eventCallback(new MouseButtonPressedEvent(event.button));
+            if (this.#isOutside) return;
+            this.handleEvent(new MouseButtonPressedEvent(event.button));
         };
         document.addEventListener("mousedown", mousedownHandler);
 
         const contextmenuHandler = (event: MouseEvent) => {
-            if (this.isOutside) return;
+            if (this.#isOutside) return;
             event.preventDefault();
             event.stopPropagation();
         };
         document.addEventListener("contextmenu", contextmenuHandler);
 
         const mouseupHandler = (event: MouseEvent) => {
-            if (this.isOutside) return;
-            this.#data.eventCallback(
-                new MouseButtonReleasedEvent(event.button),
-            );
+            if (this.#isOutside) return;
+            this.handleEvent(new MouseButtonReleasedEvent(event.button));
         };
         document.addEventListener("mouseup", mouseupHandler);
 
         const wheelHandler = (event: WheelEvent) => {
-            if (this.isOutside) return;
+            if (this.#isOutside) return;
             event.preventDefault();
             event.stopPropagation();
-            this.#data.eventCallback(
+            this.handleEvent(
                 new MouseScrolledEvent(event.deltaX, event.deltaY),
             );
         };
@@ -154,7 +148,7 @@ export class WebAppWindow extends _AppWindow {
 
         const mousemoveHandler = (event: MouseEvent) => {
             const { left, top, width, height } =
-                this.#container.getBoundingClientRect();
+                this.#canvas.getBoundingClientRect();
 
             const elementPositionX = left + window.pageXOffset;
             const elementPositionY = top + window.pageYOffset;
@@ -162,23 +156,23 @@ export class WebAppWindow extends _AppWindow {
             const elX = event.pageX - elementPositionX;
             const elY = event.pageY - elementPositionY;
 
-            this.isOutside =
+            this.#isOutside =
                 width === 0 ||
                 height === 0 ||
                 elX < 0 ||
                 elY < 0 ||
                 elX > width ||
                 elY > height;
-            if (this.isOutside) return;
-            this.#data.eventCallback(new MouseMovedEvent(elX, elY));
+            if (this.#isOutside) return;
+            this.handleEvent(new MouseMovedEvent(elX, elY));
         };
         document.addEventListener("mousemove", mousemoveHandler);
         //#endregion
 
         //#region Remove Event Handlers
-        listenElementRemove(this.#container, () => {
+        listenElementRemove(this.#canvas, () => {
             const event = new WindowCloseEvent();
-            this.#data.eventCallback(event);
+            this.handleEvent(event);
 
             window.removeEventListener("resize", resizeHandler);
             document.removeEventListener("keydown", keydownHandler);
@@ -196,6 +190,15 @@ export class WebAppWindow extends _AppWindow {
     }
     //#endregion
 
+    handleEvent(event: Event) {
+        if (event.getType() === EventType.WindowResize) {
+            const resizeEvent = event as WindowResizeEvent;
+            this.#canvas.style.width = `${resizeEvent.getWidth()}px`;
+            this.#canvas.style.height = `${resizeEvent.getHeight()}px`;
+        }
+        this.#data.eventCallback(event);
+    }
+
     //#region Private Fields
     #data = {
         title: "",
@@ -204,5 +207,8 @@ export class WebAppWindow extends _AppWindow {
         VSync: false,
         eventCallback: noop as EventCallBackFn,
     };
+    #container!: HTMLElement;
+    #canvas!: HTMLCanvasElement;
+    #isOutside = false;
     //#endregion
 }

@@ -15,4 +15,8 @@ export class WebGL2RendererAPI extends RendererAPI {
     drawIndexed(vertexArray: VertexArray): void {
         gl.drawElements(gl.TRIANGLES, vertexArray.getIndexBuffer().getCount(), gl.UNSIGNED_INT, 0);
     }
+
+    setViewport(x: number, y: number, width: number, height: number): void {
+        gl.viewport(x, y, width, height);
+    }
 }

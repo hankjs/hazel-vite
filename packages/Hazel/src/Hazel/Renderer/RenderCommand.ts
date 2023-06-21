@@ -27,4 +27,8 @@ export class RenderCommand {
     static drawIndexed(vertexArray: VertexArray): void {
         s_rendererAPI.drawIndexed(vertexArray);
     }
+
+    static setViewport(x: number, y: number, width: number, height: number): void {
+        s_rendererAPI.setViewport(x, y, width, height);
+    }
 }

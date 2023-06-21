@@ -1,45 +1,20 @@
 //#region Hazel
 import { Event } from "@pw/Hazel/Hazel/Events/Event";
-import {
-    KeyEvent,
-    KeyPressedEvent,
-    KeyReleasedEvent,
-    KeyTypedEvent,
-} from "@pw/Hazel/Hazel/Events/KeyEvent";
-import {
-    MouseButtonEvent,
-    MouseButtonPressedEvent,
-    MouseButtonReleasedEvent,
-    MouseMovedEvent,
-    MouseScrolledEvent,
-} from "@pw/Hazel/Hazel/Events/MouseEvent";
-import {
-    WindowCloseEvent,
-    WindowResizeEvent,
-} from "@pw/Hazel/Hazel/Events/ApplicationEvent";
-import {
-    AppRenderEvent,
-    AppTickEvent,
-    AppUpdateEvent,
-} from "@pw/Hazel/Hazel/Events/ApplicationEvent";
-import { Application as _Application } from "@pw/Hazel/Hazel/Application";
+import { Application } from "@pw/Hazel/Hazel/Application";
 //#endregion
 
-import {
-    WebAppWindow as AppWindowImpl,
-    type WindowProps,
-} from "./WebAppWindow";
+import { WebAppWindow, type WindowProps } from "./WebAppWindow";
 import { WebLoop } from "./WebLoop";
 import { WebInput } from "./WebInput";
 
-export class WebApplication extends _Application {
-    static getInstance(): _Application {
-        return _Application.getInstance();
+export class WebApplication extends Application {
+    static getInstance(): Application {
+        return Application.getInstance();
     }
 
     constructor(props: WindowProps) {
         super(props);
-        this.appWindow = AppWindowImpl.create(props);
+        this.appWindow = WebAppWindow.create(props);
         this.appWindow.setEventCallback(this.onEvent.bind(this));
         this.#input = WebInput.create();
     }

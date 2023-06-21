@@ -27,5 +27,9 @@ export class RendererAPI {
     drawIndexed(vertexArray: VertexArray): void {
         throw new Error("Method not implemented.");
     }
+
+    setViewport(x: number, y: number, width: number, height: number): void {
+        throw new Error("Method not implemented.");
+    }
     //#endregion
 }
