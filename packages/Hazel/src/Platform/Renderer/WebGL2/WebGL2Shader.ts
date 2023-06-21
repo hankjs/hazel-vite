@@ -1,3 +1,4 @@
+import type { mat4 } from "gl-matrix";
 import { gl } from "./gl";
 
 export class WebGL2Shader {
@@ -24,6 +25,11 @@ export class WebGL2Shader {
     }
     unbind(): void {
         gl.useProgram(null);
+    }
+
+    uploadUniformMat4(name: string, matrix: Float32Array | mat4): void {
+        const location = gl.getUniformLocation(this.rendererID, name);
+        gl.uniformMatrix4fv(location, false, matrix);
     }
 
     //#region Private Fields

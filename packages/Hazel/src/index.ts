@@ -43,3 +43,7 @@ export {
     Shader,
 } from "./Hazel";
 //#endregion
+
+//#region Camera
+export { OrthographicCamera } from "./Hazel";
+//#endregion

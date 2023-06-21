@@ -96,4 +96,5 @@ export {
     ShaderDataType,
     shaderDataTypeSize,
 } from "./Buffer";
+export * from "./OrthographicCamera";
 //#endregion

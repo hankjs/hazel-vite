@@ -15,6 +15,7 @@ import {
     Shader,
     RenderCommand,
     Renderer,
+    OrthographicCamera,
 } from "@hazel/hazel";
 import { KeyCodes } from "@hazel/share";
 
@@ -24,6 +25,7 @@ class WebGL2Layer extends Layer {
     }
 
     onAttach(): void {
+        //#region Triangle
         this.vertexArray = VertexArray.create();
         this.vertexArray.bind();
 
@@ -48,6 +50,44 @@ class WebGL2Layer extends Layer {
         this.indexBuffer = IndexBuffer.create(indices, indices.length);
         this.vertexArray.addIndexBuffer(this.indexBuffer);
 
+        const vertexSrc = `#version 300 es
+            precision highp float;
+			
+			layout(location = 0) in vec3 a_Position;
+			layout(location = 1) in vec4 a_Colot;
+
+            uniform mat4 u_ViewProjection;
+
+			out vec3 v_Position;
+			out vec4 v_Color;
+
+			void main()
+			{
+				v_Position = a_Position;
+                v_Color = a_Colot;
+				gl_Position = u_ViewProjection * vec4(a_Position, 1.0);	
+			}
+		`;
+
+        const fragmentSrc = `#version 300 es
+            precision highp float;
+			
+			out vec4 color;
+
+			in vec3 v_Position;
+			in vec4 v_Color;
+
+			void main()
+			{
+				color = vec4(v_Position * 0.5 + 0.5, 1.0);
+                color = v_Color;
+			}
+		`;
+
+        this.shader = Shader.create(vertexSrc, fragmentSrc);
+        //#endregion
+
+        //#region Square
         this.squareVA = VertexArray.create();
 
         // prettier-ignore
@@ -73,57 +113,24 @@ class WebGL2Layer extends Layer {
         const squareIndices = new Uint32Array([0, 1, 2, 2, 3, 0]);
         this.squareIB = IndexBuffer.create(squareIndices, squareIndices.length);
         this.squareVA.addIndexBuffer(this.squareIB);
-
-        const vertexSrc = `#version 300 es
-            precision highp float;
-			
-			layout(location = 0) in vec3 a_Position;
-			layout(location = 1) in vec4 a_Colot;
-
-			out vec3 v_Position;
-			out vec4 v_Color;
-
-			void main()
-			{
-				v_Position = a_Position;
-                v_Color = a_Colot;
-				gl_Position = vec4(a_Position, 1.0);	
-			}
-		`;
-
-        const fragmentSrc = `#version 300 es
-            precision highp float;
-			
-			out vec4 color;
-
-			in vec3 v_Position;
-			in vec4 v_Color;
-
-			void main()
-			{
-				color = vec4(v_Position * 0.5 + 0.5, 1.0);
-                color = v_Color;
-			}
-		`;
-
-        this.shader = Shader.create(vertexSrc, fragmentSrc);
-
         const squareVertexSrc = `#version 300 es
-            precision highp float;
+            precision mediump float;
             
             layout(location = 0) in vec3 a_Position;
+
+            uniform mat4 u_ViewProjection;
 
             out vec3 v_Position;
 
             void main()
             {
                 v_Position = a_Position;
-                gl_Position = vec4(a_Position, 1.0);	
+                gl_Position = u_ViewProjection * vec4(a_Position, 1.0);	
             }
         `;
 
         const squareFragmentSrc = `#version 300 es
-            precision highp float;
+            precision mediump float;
             
             out vec4 color;
 
@@ -136,18 +143,19 @@ class WebGL2Layer extends Layer {
         `;
 
         this.squareShader = Shader.create(squareVertexSrc, squareFragmentSrc);
+        //#endregion
+
     }
     onDetach(): void {}
     onUpdate(): void {
         RenderCommand.setClearColor([0.1, 0.1, 0.1, 1]);
         RenderCommand.clear();
 
-        Renderer.beginScene();
-        this.squareShader.bind();
-        Renderer.submit(this.squareVA);
+        Renderer.beginScene(this.camera);
 
-        this.shader.bind();
-        Renderer.submit(this.vertexArray);
+        Renderer.submit(this.squareShader, this.squareVA);
+
+        Renderer.submit(this.shader, this.vertexArray);
 
         Renderer.endScene();
     }
@@ -170,6 +178,8 @@ class WebGL2Layer extends Layer {
     squareIB!: IndexBuffer;
     squareVA!: VertexArray;
     squareVB!: VertexBuffer;
+
+    camera = new OrthographicCamera(-2, 2, -2, 2);
     //#endregion
 }
 
