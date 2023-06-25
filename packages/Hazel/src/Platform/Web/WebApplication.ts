@@ -6,6 +6,7 @@ import { Application } from "@pw/Hazel/Hazel/Application";
 import { WebAppWindow, type WindowProps } from "./WebAppWindow";
 import { WebLoop } from "./WebLoop";
 import { WebInput } from "./WebInput";
+import { Clock } from "@hazel/share";
 
 export class WebApplication extends Application {
     static getInstance(): Application {
@@ -17,6 +18,7 @@ export class WebApplication extends Application {
         this.appWindow = WebAppWindow.create(props);
         this.appWindow.setEventCallback(this.onEvent.bind(this));
         this.#input = WebInput.create();
+        this.#clock = new Clock();
     }
 
     run(): void {
@@ -24,11 +26,12 @@ export class WebApplication extends Application {
         this.#running = true;
         this.#loop.while(
             () => {
+                const ts = this.#clock.getDeltaSecond()
                 for (const layer of this.layerStack) {
-                    layer.onUpdate();
+                    layer.onUpdate(ts);
                 }
 
-                this.appWindow.onUpdate();
+                this.appWindow.onUpdate(ts);
             },
             () => (this.#running = false),
         );
@@ -47,5 +50,6 @@ export class WebApplication extends Application {
     #input: WebInput;
     #running: boolean = true;
     #loop: WebLoop = WebLoop.create();
+    #clock: Clock;
     //#endregion
 }

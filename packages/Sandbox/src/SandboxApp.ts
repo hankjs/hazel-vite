@@ -151,23 +151,23 @@ class WebGL2Layer extends Layer {
         //#endregion
     }
     onDetach(): void {}
-    onUpdate(): void {
+    onUpdate(ts: number): void {
         if (Input.isKeyPressed(KeyCodes.ArrowLeft)) {
-            this.cameraPosition[0] += this.cameraMoveSpeed;
+            this.cameraPosition[0] += this.cameraMoveSpeed * ts;
         } else if (Input.isKeyPressed(KeyCodes.ArrowRight)) {
-            this.cameraPosition[0] -= this.cameraMoveSpeed;
+            this.cameraPosition[0] -= this.cameraMoveSpeed * ts;
         }
 
         if (Input.isKeyPressed(KeyCodes.ArrowUp)) {
-            this.cameraPosition[1] -= this.cameraMoveSpeed;
+            this.cameraPosition[1] -= this.cameraMoveSpeed * ts;
         } else if (Input.isKeyPressed(KeyCodes.ArrowDown)) {
-            this.cameraPosition[1] += this.cameraMoveSpeed;
+            this.cameraPosition[1] += this.cameraMoveSpeed * ts;
         }
 
         if (Input.isKeyPressed(KeyCodes.KeyA)) {
-            this.cameraRotation -= this.cameraRotationSpeed;
+            this.cameraRotation -= this.cameraRotationSpeed * ts;
         } else if (Input.isKeyPressed(KeyCodes.KeyD)) {
-            this.cameraRotation += this.cameraRotationSpeed;
+            this.cameraRotation += this.cameraRotationSpeed * ts;
         }
 
         RenderCommand.setClearColor([0.1, 0.1, 0.1, 1]);
@@ -217,7 +217,7 @@ class WebGL2Layer extends Layer {
     cameraPosition = vec3.create();
     cameraRotation = 0;
     cameraMoveSpeed = 0.1;
-    cameraRotationSpeed = 0.1;
+    cameraRotationSpeed = 180;
     //#endregion
 }
 

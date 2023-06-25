@@ -1,4 +1,4 @@
-import { vec3, mat4 } from "gl-matrix";
+import { vec3, mat4, glMatrix } from "gl-matrix";
 
 export class OrthographicCamera {
     constructor(left: number, right: number, bottom: number, top: number) {
@@ -56,7 +56,7 @@ export class OrthographicCamera {
     private calculateViewMatrix(): void {
         const transform = mat4.create();
         mat4.translate(transform, transform, this.#position);
-        mat4.rotateZ(transform, transform, this.#rotation);
+        mat4.rotateZ(transform, transform, glMatrix.toRadian(this.#rotation));
 
         this.#viewMatrix = mat4.invert(mat4.create(), transform);
         this.#viewProjectionMatrix = mat4.mul(

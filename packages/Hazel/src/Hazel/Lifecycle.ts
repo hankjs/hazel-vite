@@ -3,5 +3,5 @@ export abstract class Lifecycle {
 
     abstract onDetach(): void;
 
-    abstract onUpdate(): void;
+    abstract onUpdate(ts: number): void;
 }
