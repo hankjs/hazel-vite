@@ -1,4 +1,4 @@
-import type { mat4 } from "gl-matrix";
+import type { mat3, mat4, vec2, vec3, vec4 } from "gl-matrix";
 import { gl } from "./gl";
 
 export class WebGL2Shader {
@@ -27,7 +27,49 @@ export class WebGL2Shader {
         gl.useProgram(null);
     }
 
-    uploadUniformMat4(name: string, matrix: Float32Array | mat4): void {
+    uploadUniformInt(name: string, value: number): void {
+        const location = gl.getUniformLocation(this.rendererID, name);
+        gl.uniform1i(location, value);
+    }
+
+    uploadUniformFloat(name: string, value: number): void {
+        const location = gl.getUniformLocation(this.rendererID, name);
+        gl.uniform1f(location, value);
+    }
+
+    uploadUniformFloat2(name: string, value: vec2 | [number, number]): void {
+        const location = gl.getUniformLocation(this.rendererID, name);
+        gl.uniform2f(location, value[0], value[1]);
+    }
+
+    uploadUniformFloat3(
+        name: string,
+        value: vec3 | [number, number, number],
+    ): void {
+        const location = gl.getUniformLocation(this.rendererID, name);
+        gl.uniform3f(location, value[0], value[1], value[2]);
+    }
+
+    uploadUniformFloat4(
+        name: string,
+        value: vec4 | [number, number, number, number],
+    ): void {
+        const location = gl.getUniformLocation(this.rendererID, name);
+        gl.uniform4f(location, value[0], value[1], value[2], value[3]);
+    }
+
+    uploadUniformMat3(
+        name: string,
+        matrix: mat3 | [number, number, number],
+    ): void {
+        const location = gl.getUniformLocation(this.rendererID, name);
+        gl.uniformMatrix4fv(location, false, matrix);
+    }
+
+    uploadUniformMat4(
+        name: string,
+        matrix: mat4 | [number, number, number, number],
+    ): void {
         const location = gl.getUniformLocation(this.rendererID, name);
         gl.uniformMatrix4fv(location, false, matrix);
     }

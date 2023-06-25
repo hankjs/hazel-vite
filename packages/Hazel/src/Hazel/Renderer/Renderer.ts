@@ -20,14 +20,15 @@ export class Renderer {
 
     static endScene(): void {}
 
-    static submit(shader: Shader, vertexArray: VertexArray): void {
+    static submit(shader: Shader, vertexArray: VertexArray, transform: mat4 = mat4.create()): void {
         shader.bind();
         shader.uploadUniformMat4(
             "u_ViewProjection",
             sceneData.viewProjectionMatrix,
         );
-        vertexArray.bind();
+        shader.uploadUniformMat4("u_Transform", transform);
 
+        vertexArray.bind();
         RenderCommand.drawIndexed(vertexArray);
     }
 
