@@ -22,7 +22,7 @@ import {
     Input,
 } from "@hazel/hazel";
 import { KeyCodes } from "@hazel/share";
-import { mat4, vec3 } from "gl-matrix";
+import { mat4, vec3, vec4 } from "gl-matrix";
 
 class WebGL2Layer extends Layer {
     constructor(name: string = "WebGL2") {
@@ -93,33 +93,33 @@ class WebGL2Layer extends Layer {
         this.shader = Shader.create(vertexSrc, fragmentSrc);
         //#endregion
 
-        //#region Square
-        this.squareVA = VertexArray.create();
+        //#region flatColor
+        this.flatColorVA = VertexArray.create();
 
         // prettier-ignore
-        const squareVertices= new Float32Array([
+        const flatColorVertices= new Float32Array([
             -0.5, -0.5, 0.0,
              0.5, -0.5, 0.0,
              0.5,  0.5, 0.0,
             -0.5,  0.5, 0.0,
         ]);
 
-        this.squareVB = VertexBuffer.create(
-            squareVertices,
-            squareVertices.length,
+        this.flatColorVB = VertexBuffer.create(
+            flatColorVertices,
+            flatColorVertices.length,
         );
 
-        this.squareVB.setLayout(
+        this.flatColorVB.setLayout(
             BufferLayout.create([
                 BufferElement.create(ShaderDataType.Float3, "a_Position"),
             ]),
         );
-        this.squareVA.addVertexBuffer(this.squareVB);
+        this.flatColorVA.addVertexBuffer(this.flatColorVB);
 
-        const squareIndices = new Uint32Array([0, 1, 2, 2, 3, 0]);
-        this.squareIB = IndexBuffer.create(squareIndices, squareIndices.length);
-        this.squareVA.addIndexBuffer(this.squareIB);
-        const squareVertexSrc = `#version 300 es
+        const flatColorIndices = new Uint32Array([0, 1, 2, 2, 3, 0]);
+        this.flatColorIB = IndexBuffer.create(flatColorIndices, flatColorIndices.length);
+        this.flatColorVA.addIndexBuffer(this.flatColorIB);
+        const flatColorVertexSrc = `#version 300 es
             precision mediump float;
             
             layout(location = 0) in vec3 a_Position;
@@ -133,19 +133,21 @@ class WebGL2Layer extends Layer {
             }
         `;
 
-        const squareFragmentSrc = `#version 300 es
+        const flatColorFragmentSrc = `#version 300 es
             precision mediump float;
             
             out vec4 color;
 
+            uniform vec4 u_Color;
+
             void main()
             {
-                color = vec4(0, 0, 0.8, 1.0);
+                color = u_Color;
             }
         `;
 
-        this.squarePosition = vec3.fromValues(-1, -1, 0.0);
-        this.squareShader = Shader.create(squareVertexSrc, squareFragmentSrc);
+        this.flatColorPosition = vec3.fromValues(-1, -1, 0.0);
+        this.flatColorShader = Shader.create(flatColorVertexSrc, flatColorFragmentSrc);
         //#endregion
     }
     onDetach(): void {}
@@ -170,17 +172,17 @@ class WebGL2Layer extends Layer {
         }
         //#endregion
 
-        //#region Square Transform
+        //#region flatColor Transform
         if (Input.isKeyPressed(KeyCodes.KeyJ)) {
-            this.squarePosition[0] -= this.squareMoveSpeed * ts;
+            this.flatColorPosition[0] -= this.flatColorMoveSpeed * ts;
         } else if (Input.isKeyPressed(KeyCodes.KeyL)) {
-            this.squarePosition[0] += this.squareMoveSpeed * ts;
+            this.flatColorPosition[0] += this.flatColorMoveSpeed * ts;
         }
 
         if (Input.isKeyPressed(KeyCodes.KeyI)) {
-            this.squarePosition[1] += this.squareMoveSpeed * ts;
+            this.flatColorPosition[1] += this.flatColorMoveSpeed * ts;
         } else if (Input.isKeyPressed(KeyCodes.KeyK)) {
-            this.squarePosition[1] -= this.squareMoveSpeed * ts;
+            this.flatColorPosition[1] -= this.flatColorMoveSpeed * ts;
         }
         //#endregion
 
@@ -196,9 +198,13 @@ class WebGL2Layer extends Layer {
         const originTransform = mat4.translate(
             mat4.create(),
             mat4.create(),
-            this.squarePosition,
+            this.flatColorPosition,
         );
 
+        const red = vec4.fromValues(0.8, 0.2, 0.3, 1.0);
+        const blue = vec4.fromValues(0.2, 0.3, 0.8, 1.0);
+
+        this.flatColorShader.bind();
         for (let y = 0; y < 20; y++) {
             for (let x = 0; x < 20; x++) {
                 const pos = vec3.fromValues(x * 0.11, y * 0.11, 0);
@@ -207,9 +213,13 @@ class WebGL2Layer extends Layer {
                     originTransform,
                     pos,
                 );
+                this.flatColorShader.uploadUniformFloat4(
+                    "u_Color",
+                    x % 2 === 0 ? red : blue,
+                );
                 Renderer.submit(
-                    this.squareShader,
-                    this.squareVA,
+                    this.flatColorShader,
+                    this.flatColorVA,
                     mat4.mul(mat4.create(), transform, scale),
                 );
             }
@@ -221,16 +231,6 @@ class WebGL2Layer extends Layer {
     }
 
     onEvent(event: Event): void {
-        if (event.getType() === EventType.WindowResize) {
-            const resizeEvent = event as WindowResizeEvent;
-            Renderer.setViewport(
-                0,
-                0,
-                resizeEvent.getWidth(),
-                resizeEvent.getHeight(),
-            );
-        }
-
         const dispatcher = new EventDispatcher(event);
         dispatcher.dispatch(KeyPressedEvent, this.onKeyPressedEvent.bind(this));
     }
@@ -244,10 +244,10 @@ class WebGL2Layer extends Layer {
     vertexBuffer!: VertexBuffer;
     indexBuffer!: IndexBuffer;
     shader!: Shader;
-    squareShader!: Shader;
-    squareIB!: IndexBuffer;
-    squareVA!: VertexArray;
-    squareVB!: VertexBuffer;
+    flatColorShader!: Shader;
+    flatColorIB!: IndexBuffer;
+    flatColorVA!: VertexArray;
+    flatColorVB!: VertexBuffer;
 
     camera = new OrthographicCamera(-2, 2, -2, 2);
     cameraPosition = vec3.create();
@@ -255,8 +255,8 @@ class WebGL2Layer extends Layer {
     cameraMoveSpeed = 1;
     cameraRotationSpeed = 180;
 
-    squarePosition = vec3.create();
-    squareMoveSpeed = 1;
+    flatColorPosition = vec3.create();
+    flatColorMoveSpeed = 1;
     //#endregion
 }
 
