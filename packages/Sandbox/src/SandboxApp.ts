@@ -20,6 +20,7 @@ import {
     KeyPressedEvent,
     KeyEvent,
     Input,
+    Texture2D
 } from "@hazel/hazel";
 import { KeyCodes } from "@hazel/share";
 import { mat4, vec3, vec4 } from "gl-matrix";
@@ -98,10 +99,10 @@ class WebGL2Layer extends Layer {
 
         // prettier-ignore
         const flatColorVertices= new Float32Array([
-            -0.5, -0.5, 0.0,
-             0.5, -0.5, 0.0,
-             0.5,  0.5, 0.0,
-            -0.5,  0.5, 0.0,
+            -0.5, -0.5, 0.0, 0.0, 0.0,
+             0.5, -0.5, 0.0, 1.0, 0.0,
+             0.5,  0.5, 0.0, 1.0, 1.0,
+            -0.5,  0.5, 0.0, 0.0, 1.0,
         ]);
 
         this.flatColorVB = VertexBuffer.create(
@@ -112,6 +113,7 @@ class WebGL2Layer extends Layer {
         this.flatColorVB.setLayout(
             BufferLayout.create([
                 BufferElement.create(ShaderDataType.Float3, "a_Position"),
+                BufferElement.create(ShaderDataType.Float2, "a_TexCoord"),
             ]),
         );
         this.flatColorVA.addVertexBuffer(this.flatColorVB);
@@ -149,18 +151,62 @@ class WebGL2Layer extends Layer {
             }
         `;
 
-        this.flatColorPosition = vec3.fromValues(-1, -1, 0.0);
         this.flatColorShader = Shader.create(
             flatColorVertexSrc,
             flatColorFragmentSrc,
         );
+        this.flatColorPosition = vec3.fromValues(-1, -1, 0.0);
+        //#endregion
+        
+        //#region Texture
+        const textureVertexSrc = `#version 300 es
+        precision mediump float;
+        
+        layout(location = 0) in vec3 a_Position;
+        layout(location = 1) in vec2 a_TexCoord;
+
+        uniform mat4 u_ViewProjection;
+        uniform mat4 u_Transform;
+
+        out vec2 v_TexCoord;
+
+        void main()
+        {
+            v_TexCoord = a_TexCoord;
+            gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);	
+        }
+    `;
+
+        const textureFragmentSrc = `#version 300 es
+        precision mediump float;
+        
+        out vec4 color;
+
+        in vec2 v_TexCoord;
+
+        uniform vec3 u_Color;
+        uniform sampler2D u_Texture;
+
+        void main()
+        {
+            color = texture(u_Texture, v_TexCoord);
+        }
+    `;
+        this.textureShader = Shader.create(
+            textureVertexSrc,
+            textureFragmentSrc,
+        );
+
+        this.texture = Texture2D.create("/public/image/textures/Checkerboard.png");
+        this.textureShader.bind();
+        this.textureShader.uploadUniformInt("u_Texture", 0);
         //#endregion
 
         //#region Debug GUI
         GuiLayer.begin("Square");
         GuiLayer.addColor(this, "squareColor");
 
-        GuiLayer.end()
+        GuiLayer.end();
         //#endregion
     }
     onDetach(): void {}
@@ -233,7 +279,9 @@ class WebGL2Layer extends Layer {
             }
         }
 
-        Renderer.submit(this.shader, this.vertexArray);
+        Renderer.submit(this.textureShader, this.flatColorVA, mat4.scale(mat4.create(), mat4.create(), [1.5, 1.5, 1.5]));
+
+        // Renderer.submit(this.shader, this.vertexArray);
 
         Renderer.endScene();
     }
@@ -256,6 +304,9 @@ class WebGL2Layer extends Layer {
     flatColorIB!: IndexBuffer;
     flatColorVA!: VertexArray;
     flatColorVB!: VertexBuffer;
+
+    textureShader!: Shader;
+    texture!: Texture2D;
 
     camera = new OrthographicCamera(-2, 2, -2, 2);
     cameraPosition = vec3.create();

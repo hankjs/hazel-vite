@@ -5,6 +5,7 @@ import { IndexBuffer, VertexBuffer } from "./Buffer";
 import { Shader } from "./Shader";
 import { VertexArray } from "./VertexArray";
 import { RenderCommand, setRendererAPI } from "./RenderCommand";
+import { Texture2D } from "./Texture";
 
 //#region Renderer WebGL2
 import { WebGL2GraphicsContext } from "@pw/Hazel/Platform/Renderer/WebGL2/WebGL2GraphicsContext";
@@ -15,6 +16,7 @@ import {
 import { WebGL2Shader } from "@pw/Hazel/Platform/Renderer/WebGL2/WebGL2Shader";
 import { WebGL2VertexArray } from "@pw/Hazel/Platform/Renderer/WebGL2/WebGL2VertexArray";
 import { WebGL2RendererAPI } from "@pw/Hazel/Platform/Renderer/WebGL2/WebGL2RendererAPI";
+import { WebGL2Texture2D } from "@pw/Hazel/Platform/Renderer/WebGL2/WebGL2Texture2D";
 //#endregion
 
 //#region dynamic
@@ -68,6 +70,14 @@ VertexArray.create = function create(): VertexArray {
     return null as never;
 };
 
+Texture2D.create = function create(path): Texture2D {
+    if (RendererAPI.getAPI() === API.WebGL2) {
+        return new WebGL2Texture2D(path);
+    }
+
+    return null as never;
+};
+
 RenderCommand.init = function init(): void {
     if (RendererAPI.getAPI() === API.WebGL2) {
         return setRendererAPI(new WebGL2RendererAPI());
@@ -83,6 +93,8 @@ export * from "./Shader";
 export * from "./OrthographicCamera";
 
 export { GraphicsContext, IndexBuffer, VertexBuffer, Shader, VertexArray };
+
+export { Texture2D };
 
 export { Renderer, RendererAPI, RenderCommand };
 

@@ -1,0 +1,68 @@
+import { Texture2D } from "@pw/Hazel/Hazel/Renderer/Texture";
+import { gl } from "./gl";
+
+export class WebGL2Texture2D extends Texture2D {
+    private glTexture!: WebGLTexture;
+    private width: number = 0;
+    private height: number = 0;
+    private path: string;
+
+    constructor(path: string) {
+        super();
+        this.path = path;
+        const glTexture = gl.createTexture();
+        if (!glTexture) {
+            throw new Error("Failed to create texture");
+        }
+        this.glTexture = glTexture;
+        gl.bindTexture(gl.TEXTURE_2D, this.glTexture);
+        gl.texImage2D(
+            gl.TEXTURE_2D,
+            0,
+            gl.RGB,
+            1,
+            1,
+            0,
+            gl.RGB,
+            gl.UNSIGNED_BYTE,
+            new Uint8Array([0, 0, 255, 255]),
+        );
+        this.width = 1;
+        this.height = 1;
+
+        const img = new Image();
+        img.onload = () => this.handleImageLoad(img);
+        img.src = path;
+    }
+
+    handleImageLoad(img: HTMLImageElement) {
+        this.width = img.width;
+        this.height = img.height;
+        this.bind();
+        gl.texImage2D(
+            gl.TEXTURE_2D,
+            0,
+            gl.RGB,
+            gl.RGB,
+            gl.UNSIGNED_BYTE,
+            img,
+        );
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    }
+
+    getWidth(): number {
+        return this.width;
+    }
+
+    getHeight(): number {
+        return this.height;
+    }
+
+    bind(slot = 0) {
+        gl.activeTexture(gl.TEXTURE0 + slot);
+        gl.bindTexture(gl.TEXTURE_2D, this.glTexture);
+    }
+}

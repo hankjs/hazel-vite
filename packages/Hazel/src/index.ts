@@ -42,6 +42,7 @@ export {
     VertexBuffer,
     VertexArray,
     Shader,
+    Texture2D,
 } from "./Hazel";
 //#endregion
 
