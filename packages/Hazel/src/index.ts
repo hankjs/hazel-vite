@@ -4,6 +4,7 @@ export { type WindowProps } from "./Hazel";
 
 export {
     Input,
+    EventDispatcher,
     Event,
     EventType,
     AppTickEvent,

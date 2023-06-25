@@ -99,8 +99,15 @@ export class EventDispatcher {
         this.event = event;
     }
 
+    /**
+     * @param event EventClass
+     * @param func return boolean to indicate whether the event is handled
+     * @returns 
+     */
     dispatch<T extends Event>(
-        event: typeof Event,
+        event: {
+            getStaticType: () => EventType;
+        },
         func: (event: T) => boolean,
     ) {
         if (this.event.getType() === event.getStaticType()) {

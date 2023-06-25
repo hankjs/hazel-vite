@@ -8,6 +8,7 @@ interface SceneData {
     viewProjectionMatrix: mat4;
 }
 
+// Private static data
 let sceneData: SceneData = {
     viewProjectionMatrix: mat4.create(),
 };

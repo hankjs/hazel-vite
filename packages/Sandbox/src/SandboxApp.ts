@@ -16,7 +16,13 @@ import {
     Renderer,
     OrthographicCamera,
     WindowResizeEvent,
+    EventDispatcher,
+    KeyPressedEvent,
+    KeyEvent,
+    Input,
 } from "@hazel/hazel";
+import { KeyCodes } from "@hazel/share";
+import { vec3 } from "gl-matrix";
 
 class WebGL2Layer extends Layer {
     constructor(name: string = "WebGL2") {
@@ -143,13 +149,32 @@ class WebGL2Layer extends Layer {
 
         this.squareShader = Shader.create(squareVertexSrc, squareFragmentSrc);
         //#endregion
-
     }
     onDetach(): void {}
     onUpdate(): void {
+        if (Input.isKeyPressed(KeyCodes.ArrowLeft)) {
+            this.cameraPosition[0] += this.cameraMoveSpeed;
+        } else if (Input.isKeyPressed(KeyCodes.ArrowRight)) {
+            this.cameraPosition[0] -= this.cameraMoveSpeed;
+        }
+
+        if (Input.isKeyPressed(KeyCodes.ArrowUp)) {
+            this.cameraPosition[1] -= this.cameraMoveSpeed;
+        } else if (Input.isKeyPressed(KeyCodes.ArrowDown)) {
+            this.cameraPosition[1] += this.cameraMoveSpeed;
+        }
+
+        if (Input.isKeyPressed(KeyCodes.KeyA)) {
+            this.cameraRotation -= this.cameraRotationSpeed;
+        } else if (Input.isKeyPressed(KeyCodes.KeyD)) {
+            this.cameraRotation += this.cameraRotationSpeed;
+        }
+
         RenderCommand.setClearColor([0.1, 0.1, 0.1, 1]);
         RenderCommand.clear();
 
+        this.camera.setPosition(this.cameraPosition);
+        this.camera.setRotation(this.cameraRotation);
         Renderer.beginScene(this.camera);
 
         Renderer.submit(this.squareShader, this.squareVA);
@@ -161,12 +186,21 @@ class WebGL2Layer extends Layer {
 
     onEvent(event: Event): void {
         if (event.getType() === EventType.WindowResize) {
-            console.log(event);
             const resizeEvent = event as WindowResizeEvent;
-            console.log("resizeEvent.getWidth()", resizeEvent.getWidth());
-            console.log("resizeEvent.getHeight()", resizeEvent.getHeight());
-            Renderer.setViewport(0, 0, resizeEvent.getWidth(), resizeEvent.getHeight());
+            Renderer.setViewport(
+                0,
+                0,
+                resizeEvent.getWidth(),
+                resizeEvent.getHeight(),
+            );
         }
+
+        const dispatcher = new EventDispatcher(event);
+        dispatcher.dispatch(KeyPressedEvent, this.onKeyPressedEvent.bind(this));
+    }
+
+    onKeyPressedEvent(event: KeyPressedEvent) {
+        return false;
     }
 
     // #region Private Fields
@@ -180,6 +214,10 @@ class WebGL2Layer extends Layer {
     squareVB!: VertexBuffer;
 
     camera = new OrthographicCamera(-2, 2, -2, 2);
+    cameraPosition = vec3.create();
+    cameraRotation = 0;
+    cameraMoveSpeed = 0.1;
+    cameraRotationSpeed = 0.1;
     //#endregion
 }
 

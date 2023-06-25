@@ -38,10 +38,10 @@ export enum KeyCodes {
     End = 35,
     Home = 36,
 
-    LeftArrow = 37,
-    UpArrow = 38,
-    RightArrow = 39,
-    DownArrow = 40,
+    ArrowLeft = 37,
+    ArrowUp = 38,
+    ArrowRight = 39,
+    ArrowDown = 40,
 
     Insert = 45,
     Delete = 46,

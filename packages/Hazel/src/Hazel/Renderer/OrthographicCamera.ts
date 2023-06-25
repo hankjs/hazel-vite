@@ -25,7 +25,8 @@ export class OrthographicCamera {
         return this.#position;
     }
 
-    setPosition(x: number, y: number, z: number): void {
+    setPosition(v3: vec3 | [x: number, y: number, z: number]): void {
+        const [x, y, z] = v3;
         this.#position = vec3.fromValues(x, y, z);
         this.calculateViewMatrix();
     }
