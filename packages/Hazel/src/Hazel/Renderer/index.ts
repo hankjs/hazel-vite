@@ -16,7 +16,7 @@ import {
 import { WebGL2Shader } from "@pw/Hazel/Platform/Renderer/WebGL2/WebGL2Shader";
 import { WebGL2VertexArray } from "@pw/Hazel/Platform/Renderer/WebGL2/WebGL2VertexArray";
 import { WebGL2RendererAPI } from "@pw/Hazel/Platform/Renderer/WebGL2/WebGL2RendererAPI";
-import { WebGL2Texture2D } from "@pw/Hazel/Platform/Renderer/WebGL2/WebGL2Texture2D";
+import { WebGL2Texture2D } from "@pw/Hazel/Platform/Renderer/WebGL2/WebGL2Texture";
 //#endregion
 
 //#region dynamic
@@ -78,14 +78,14 @@ Texture2D.create = function create(path): Texture2D {
     return null as never;
 };
 
-RenderCommand.init = function init(): void {
+function initRenderCommand(): void {
     if (RendererAPI.getAPI() === API.WebGL2) {
         return setRendererAPI(new WebGL2RendererAPI());
     }
 
     return null as never;
 };
-RenderCommand.init();
+initRenderCommand();
 //#endregion
 
 //#region export

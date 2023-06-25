@@ -184,7 +184,6 @@ class WebGL2Layer extends Layer {
 
         in vec2 v_TexCoord;
 
-        uniform vec3 u_Color;
         uniform sampler2D u_Texture;
 
         void main()
@@ -198,6 +197,7 @@ class WebGL2Layer extends Layer {
         );
 
         this.texture = Texture2D.create("/public/image/textures/Checkerboard.png");
+        this.chernoLogoTexture = Texture2D.create("/public/image/textures/ChernoLogo.png");
         this.textureShader.bind();
         this.textureShader.uploadUniformInt("u_Texture", 0);
         //#endregion
@@ -279,6 +279,9 @@ class WebGL2Layer extends Layer {
             }
         }
 
+        this.texture.bind()
+        Renderer.submit(this.textureShader, this.flatColorVA, mat4.scale(mat4.create(), mat4.create(), [1.5, 1.5, 1.5]));
+        this.chernoLogoTexture.bind()
         Renderer.submit(this.textureShader, this.flatColorVA, mat4.scale(mat4.create(), mat4.create(), [1.5, 1.5, 1.5]));
 
         // Renderer.submit(this.shader, this.vertexArray);
@@ -307,6 +310,7 @@ class WebGL2Layer extends Layer {
 
     textureShader!: Shader;
     texture!: Texture2D;
+    chernoLogoTexture!: Texture2D;
 
     camera = new OrthographicCamera(-2, 2, -2, 2);
     cameraPosition = vec3.create();
@@ -323,7 +327,6 @@ class WebGL2Layer extends Layer {
 export class SandboxApp extends Application {
     constructor(props: WindowProps) {
         super(props);
-        this.pushLayer(new GuiLayer());
         this.pushLayer(new WebGL2Layer());
     }
 }

@@ -10,7 +10,9 @@ export function setRendererAPI(rendererAPI: RendererAPI): void {
 
 export class RenderCommand {
     // implementation partform in ./index.ts
-    static init: () => void;
+    static init(): void {
+        s_rendererAPI.init();
+    }
 
     static setClearColor(color: vec4 | [number, number, number, number]): void {
         if (Array.isArray(color)) {
@@ -28,7 +30,12 @@ export class RenderCommand {
         s_rendererAPI.drawIndexed(vertexArray);
     }
 
-    static setViewport(x: number, y: number, width: number, height: number): void {
+    static setViewport(
+        x: number,
+        y: number,
+        width: number,
+        height: number,
+    ): void {
         s_rendererAPI.setViewport(x, y, width, height);
     }
 }

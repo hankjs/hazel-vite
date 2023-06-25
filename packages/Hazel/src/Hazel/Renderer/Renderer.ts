@@ -14,6 +14,9 @@ let sceneData: SceneData = {
 };
 
 export class Renderer {
+    static init() {
+        RenderCommand.init()
+    }
     static beginScene(camera: OrthographicCamera): void {
         sceneData.viewProjectionMatrix = camera.getViewProjectionMatrix();
     }

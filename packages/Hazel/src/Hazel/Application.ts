@@ -1,12 +1,14 @@
-import type { AppWindow, WindowProps } from "./AppWindow";
+import { Clock } from "@hazel/share";
+import { AppWindow, type WindowProps } from "./AppWindow";
 import type {
     Event,
 } from "./Events";
 import type { Layer } from "./Layer";
 import { LayerStack } from "./LayerStack";
-import { Shader } from "./Renderer";
+import { Renderer, Shader } from "./Renderer";
 import type { IndexBuffer, VertexBuffer } from "./Renderer/Buffer";
 import type { VertexArray } from "./Renderer/VertexArray";
+import { GuiLayer } from "./Gui";
 
 let app: Application;
 
@@ -23,8 +25,17 @@ export class Application {
         if (app) {
             throw new Error("Application already exists!");
         }
-        this.layerStack = new LayerStack();
         setApp(this);
+
+        this.appWindow = AppWindow.create(props);
+        this.appWindow.setEventCallback(this.onEvent.bind(this));
+        this.clock = new Clock();
+
+        Renderer.init()
+
+        this.layerStack = new LayerStack();
+
+        this.pushLayer(new GuiLayer());
     }
 
     static getInstance(): Application {
@@ -61,5 +72,6 @@ export class Application {
     layerStack: LayerStack;
     // init in Platform
     protected appWindow!: AppWindow;
+    protected clock: Clock;
     //#endregion
 }

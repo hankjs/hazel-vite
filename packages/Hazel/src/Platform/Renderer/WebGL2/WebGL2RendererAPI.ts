@@ -4,6 +4,11 @@ import { gl } from "./gl";
 import type { vec4 } from "gl-matrix";
 
 export class WebGL2RendererAPI extends RendererAPI {
+    init(): void {
+        gl.enable(gl.BLEND);
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    }
+
     setClearColor(color: vec4): void {
         gl.clearColor(color[0], color[1], color[2], color[3]);
     }

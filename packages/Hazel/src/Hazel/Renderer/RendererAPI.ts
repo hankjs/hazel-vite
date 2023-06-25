@@ -16,6 +16,10 @@ export class RendererAPI {
     }
 
     //#region Implementation Partform
+    init(): void {
+        throw new Error("Method not implemented.");
+    }
+
     setClearColor(color: vec4): void {
         throw new Error("Method not implemented.");
     }
