@@ -1,1 +1,2 @@
-export * from "./DatGuiLayer";
+export * from "./GuiLayer";
+export * from "./DatDemoGuiLayer";

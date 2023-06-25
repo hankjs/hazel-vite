@@ -25,8 +25,7 @@ AppWindow.create = function create(props): AppWindow {
         return new WebAppWindow(props)
     }
     
-    // @ts-expect-error error build
-    return null;
+    return null as never;
 }
 
 Input.create = function create(): Input {
@@ -34,8 +33,7 @@ Input.create = function create(): Input {
         return new WebInput()
     }
     
-    // @ts-expect-error error build
-    return null;
+    return null as never;
 }
 
 Loop.create = function create(): Loop {
@@ -43,8 +41,7 @@ Loop.create = function create(): Loop {
         return new WebLoop()
     }
     
-    // @ts-expect-error error build
-    return null;
+    return null as never;
 }
 //#endregion
 

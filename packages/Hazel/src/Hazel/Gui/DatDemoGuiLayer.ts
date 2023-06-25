@@ -1,9 +1,8 @@
-import { EventCategory, type Event } from "../Events";
+import { type Event } from "../Events";
 import { Layer } from "../Layer";
 import * as dat from "dat.gui";
-import { BIT } from "../utils";
 
-export class DatGuiLayer extends Layer {
+export class DatDemoGuiLayer extends Layer {
     constructor(name = "DatGuiLayer") {
         super(name);
     }

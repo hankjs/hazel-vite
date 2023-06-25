@@ -4,7 +4,7 @@ import {
     EventType,
     Application,
     type WindowProps,
-    DatGuiLayer,
+    GuiLayer,
     BufferElement,
     BufferLayout,
     ShaderDataType,
@@ -117,7 +117,10 @@ class WebGL2Layer extends Layer {
         this.flatColorVA.addVertexBuffer(this.flatColorVB);
 
         const flatColorIndices = new Uint32Array([0, 1, 2, 2, 3, 0]);
-        this.flatColorIB = IndexBuffer.create(flatColorIndices, flatColorIndices.length);
+        this.flatColorIB = IndexBuffer.create(
+            flatColorIndices,
+            flatColorIndices.length,
+        );
         this.flatColorVA.addIndexBuffer(this.flatColorIB);
         const flatColorVertexSrc = `#version 300 es
             precision mediump float;
@@ -138,16 +141,26 @@ class WebGL2Layer extends Layer {
             
             out vec4 color;
 
-            uniform vec4 u_Color;
+            uniform vec3 u_Color;
 
             void main()
             {
-                color = u_Color;
+                color = vec4(u_Color, 1.0);
             }
         `;
 
         this.flatColorPosition = vec3.fromValues(-1, -1, 0.0);
-        this.flatColorShader = Shader.create(flatColorVertexSrc, flatColorFragmentSrc);
+        this.flatColorShader = Shader.create(
+            flatColorVertexSrc,
+            flatColorFragmentSrc,
+        );
+        //#endregion
+
+        //#region Debug GUI
+        GuiLayer.begin("Square");
+        GuiLayer.addColor(this, "squareColor");
+
+        GuiLayer.end()
         //#endregion
     }
     onDetach(): void {}
@@ -201,10 +214,9 @@ class WebGL2Layer extends Layer {
             this.flatColorPosition,
         );
 
-        const red = vec4.fromValues(0.8, 0.2, 0.3, 1.0);
-        const blue = vec4.fromValues(0.2, 0.3, 0.8, 1.0);
-
         this.flatColorShader.bind();
+        this.flatColorShader.uploadUniformFloat3("u_Color", this.squareColor);
+
         for (let y = 0; y < 20; y++) {
             for (let x = 0; x < 20; x++) {
                 const pos = vec3.fromValues(x * 0.11, y * 0.11, 0);
@@ -212,10 +224,6 @@ class WebGL2Layer extends Layer {
                     mat4.create(),
                     originTransform,
                     pos,
-                );
-                this.flatColorShader.uploadUniformFloat4(
-                    "u_Color",
-                    x % 2 === 0 ? red : blue,
                 );
                 Renderer.submit(
                     this.flatColorShader,
@@ -257,13 +265,14 @@ class WebGL2Layer extends Layer {
 
     flatColorPosition = vec3.create();
     flatColorMoveSpeed = 1;
+    squareColor: [number, number, number] = [0.2, 0.3, 0.8];
     //#endregion
 }
 
 export class SandboxApp extends Application {
     constructor(props: WindowProps) {
         super(props);
+        this.pushLayer(new GuiLayer());
         this.pushLayer(new WebGL2Layer());
-        this.pushLayer(new DatGuiLayer());
     }
 }

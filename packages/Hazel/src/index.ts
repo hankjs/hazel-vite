@@ -23,7 +23,7 @@ export {
     WindowResizeEvent,
 } from "./Hazel";
 
-export { Layer, DatGuiLayer } from "./Hazel";
+export { Layer, GuiLayer, DatDemoGuiLayer } from "./Hazel";
 
 import { type WindowProps } from "./Hazel";
 import type { Application } from "./Hazel/Application";

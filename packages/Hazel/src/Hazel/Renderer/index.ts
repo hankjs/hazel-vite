@@ -25,8 +25,7 @@ GraphicsContext.create = function create<E extends HTMLElement = HTMLElement>(
         return new WebGL2GraphicsContext(el);
     }
 
-    // @ts-expect-error error build
-    return null;
+    return null as never;
 };
 
 VertexBuffer.create = function create(
@@ -37,8 +36,7 @@ VertexBuffer.create = function create(
         return new WebGL2VertexBuffer(vertices, size);
     }
 
-    // @ts-expect-error error build
-    return null;
+    return null as never;
 };
 IndexBuffer.create = function create(
     indices: ArrayBufferView,
@@ -48,8 +46,7 @@ IndexBuffer.create = function create(
         return new WebGL2IndexBuffer(indices, size);
     }
 
-    // @ts-expect-error error build
-    return null;
+    return null as never;
 };
 
 Shader.create = function create(
@@ -60,8 +57,7 @@ Shader.create = function create(
         return new WebGL2Shader(vertexSource, fragmentSource);
     }
 
-    // @ts-expect-error error build
-    return null;
+    return null as never;
 };
 
 VertexArray.create = function create(): VertexArray {
@@ -69,8 +65,7 @@ VertexArray.create = function create(): VertexArray {
         return new WebGL2VertexArray();
     }
 
-    // @ts-expect-error error build
-    return null;
+    return null as never;
 };
 
 RenderCommand.init = function init(): void {
@@ -78,23 +73,23 @@ RenderCommand.init = function init(): void {
         return setRendererAPI(new WebGL2RendererAPI());
     }
 
-    // @ts-expect-error error build
-    return null;
+    return null as never;
 };
 RenderCommand.init();
 //#endregion
 
 //#region export
+export * from "./Shader";
+export * from "./OrthographicCamera";
+
 export { GraphicsContext, IndexBuffer, VertexBuffer, Shader, VertexArray };
 
 export { Renderer, RendererAPI, RenderCommand };
 
-export * from "./Shader";
 export {
     BufferElement,
     BufferLayout,
     ShaderDataType,
     shaderDataTypeSize,
 } from "./Buffer";
-export * from "./OrthographicCamera";
 //#endregion
