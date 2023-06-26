@@ -1,7 +1,6 @@
 import {
     Layer,
     Event,
-    EventType,
     Application,
     type WindowProps,
     GuiLayer,
@@ -11,22 +10,19 @@ import {
     IndexBuffer,
     VertexBuffer,
     VertexArray,
-    Shader,
     RenderCommand,
     Renderer,
     OrthographicCamera,
-    WindowResizeEvent,
     EventDispatcher,
     KeyPressedEvent,
-    KeyEvent,
     Input,
     Texture2D,
     ShaderLibrary,
 } from "@hazel/hazel";
 import { KeyCodes } from "@hazel/share";
-import { mat4, vec3, vec4 } from "gl-matrix";
+import { mat4, vec3 } from "gl-matrix";
 import { CheckerboardPng, ChernoLogoPng } from "./assets/textures";
-import { TextureGLSL } from "./assets/shaders";
+import { FlatColorGLSL, ShaderGLSL, TextureGLSL } from "./assets/shaders";
 
 class WebGL2Layer extends Layer {
     constructor(name: string = "WebGL2") {
@@ -61,42 +57,7 @@ class WebGL2Layer extends Layer {
         this.indexBuffer = IndexBuffer.create(indices, indices.length);
         this.vertexArray.addIndexBuffer(this.indexBuffer);
 
-        const vertexSrc = `#version 300 es
-            precision highp float;
-			
-			layout(location = 0) in vec3 a_Position;
-			layout(location = 1) in vec4 a_Colot;
-
-            uniform mat4 u_ViewProjection;
-            uniform mat4 u_Transform;
-
-			out vec3 v_Position;
-			out vec4 v_Color;
-
-			void main()
-			{
-				v_Position = a_Position;
-                v_Color = a_Colot;
-				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);	
-			}
-		`;
-
-        const fragmentSrc = `#version 300 es
-            precision highp float;
-			
-			out vec4 color;
-
-			in vec3 v_Position;
-			in vec4 v_Color;
-
-			void main()
-			{
-				color = vec4(v_Position * 0.5 + 0.5, 1.0);
-                color = v_Color;
-			}
-		`;
-
-        this.shader = Shader.create("shader", vertexSrc, fragmentSrc);
+        this.shaderLibrary.load("shader", ShaderGLSL);
         //#endregion
 
         //#region flatColor
@@ -129,38 +90,8 @@ class WebGL2Layer extends Layer {
             flatColorIndices.length,
         );
         this.flatColorVA.addIndexBuffer(this.flatColorIB);
-        const flatColorVertexSrc = `#version 300 es
-            precision mediump float;
-            
-            layout(location = 0) in vec3 a_Position;
+        this.shaderLibrary.load("flatColor", FlatColorGLSL);
 
-            uniform mat4 u_ViewProjection;
-            uniform mat4 u_Transform;
-
-            void main()
-            {
-                gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);	
-            }
-        `;
-
-        const flatColorFragmentSrc = `#version 300 es
-            precision mediump float;
-            
-            out vec4 color;
-
-            uniform vec3 u_Color;
-
-            void main()
-            {
-                color = vec4(u_Color, 1.0);
-            }
-        `;
-
-        this.flatColorShader = Shader.create(
-            "flatColor",
-            flatColorVertexSrc,
-            flatColorFragmentSrc,
-        );
         this.flatColorPosition = vec3.fromValues(-1, -1, 0.0);
         //#endregion
 
@@ -181,7 +112,9 @@ class WebGL2Layer extends Layer {
         GuiLayer.end();
         //#endregion
     }
+
     onDetach(): void {}
+
     onUpdate(ts: number): void {
         //#region Camera Control
         if (Input.isKeyPressed(KeyCodes.ArrowLeft)) {
@@ -232,8 +165,9 @@ class WebGL2Layer extends Layer {
             this.flatColorPosition,
         );
 
-        this.flatColorShader.bind();
-        this.flatColorShader.uploadUniformFloat3("u_Color", this.squareColor);
+        const flatColorShader = this.shaderLibrary.get("flatColor");
+        flatColorShader.bind();
+        flatColorShader.uploadUniformFloat3("u_Color", this.squareColor);
 
         for (let y = 0; y < 20; y++) {
             for (let x = 0; x < 20; x++) {
@@ -244,7 +178,7 @@ class WebGL2Layer extends Layer {
                     pos,
                 );
                 Renderer.submit(
-                    this.flatColorShader,
+                    flatColorShader,
                     this.flatColorVA,
                     mat4.mul(mat4.create(), transform, scale),
                 );
@@ -265,6 +199,7 @@ class WebGL2Layer extends Layer {
             mat4.scale(mat4.create(), mat4.create(), [1.5, 1.5, 1.5]),
         );
 
+        // const shader = this.shaderLibrary.get("shader");
         // Renderer.submit(this.shader, this.vertexArray);
 
         Renderer.endScene();
@@ -285,8 +220,7 @@ class WebGL2Layer extends Layer {
     vertexArray!: VertexArray;
     vertexBuffer!: VertexBuffer;
     indexBuffer!: IndexBuffer;
-    shader!: Shader;
-    flatColorShader!: Shader;
+
     flatColorIB!: IndexBuffer;
     flatColorVA!: VertexArray;
     flatColorVB!: VertexBuffer;
