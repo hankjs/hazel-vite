@@ -1,5 +1,5 @@
 import { test, expect, beforeEach } from "vitest";
-import { WebApplication } from "@pw/Hazel/Platform/Web/WebApplication";
+import { Application } from "@pw/Hazel/Hazel";
 import { JSDOM } from "jsdom";
 import { setApp } from "@pw/Hazel/Hazel/Application";
 
@@ -13,7 +13,7 @@ beforeEach(() => {
 // canvas not supported in jsdom
 test.skip("Application runs without errors", () => {
     const canvas = dom.window.document.createElement("canvas");
-    const app = new WebApplication({
+    const app = new Application({
         el: canvas,
         title: "Test App",
         width: 800,
@@ -25,7 +25,7 @@ test.skip("Application runs without errors", () => {
 // canvas not supported in jsdom
 test.skip("Application handles events correctly", () => {
     const canvas = dom.window.document.createElement("canvas");
-    const app = new WebApplication({
+    const app = new Application({
         el: canvas,
         title: "Test App",
         width: 800,
