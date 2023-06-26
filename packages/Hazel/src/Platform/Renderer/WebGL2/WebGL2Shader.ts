@@ -1,12 +1,14 @@
 import type { mat3, mat4, vec2, vec3, vec4 } from "gl-matrix";
 import { gl } from "./gl";
-import { ShaderType } from "@pw/Hazel/Hazel/Renderer/Shader";
+import { Shader,ShaderType } from "@pw/Hazel/Hazel/Renderer/Shader";
 
-export class WebGL2Shader {
-    constructor(vertexSource: string, fragmentSource: string) {
+export class WebGL2Shader extends Shader {
+    constructor(name: string, vertexSource: string, fragmentSource?: string) {
+        super(name, vertexSource, fragmentSource ?? "")
+
         //#region normalize shader source
         let shaderMap: Map<ShaderType, string>;
-        if (fragmentSource) {
+        if (vertexSource && fragmentSource) {
             shaderMap = new Map();
             shaderMap.set(ShaderType.vertex, vertexSource);
             shaderMap.set(ShaderType.fragment, fragmentSource);

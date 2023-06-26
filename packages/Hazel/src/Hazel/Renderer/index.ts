@@ -53,11 +53,12 @@ IndexBuffer.create = function create(
 
 // @ts-expect-error overload
 Shader.create = function create(
+    name: string,
     vertexSource: string,
     fragmentSource: string,
 ): Shader {
     if (RendererAPI.getAPI() === API.WebGL2) {
-        return new WebGL2Shader(vertexSource, fragmentSource);
+        return new WebGL2Shader(name, vertexSource, fragmentSource);
     }
 
     return null as never;

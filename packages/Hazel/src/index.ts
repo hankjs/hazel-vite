@@ -37,13 +37,17 @@ export {
     RenderCommand,
     BufferElement,
     BufferLayout,
-    ShaderDataType,
     IndexBuffer,
     VertexBuffer,
     VertexArray,
+    Texture2D,
+} from "./Hazel";
+
+export {
     Shader,
     ShaderType,
-    Texture2D,
+    ShaderDataType,
+    ShaderLibrary
 } from "./Hazel";
 //#endregion
 

@@ -21,6 +21,7 @@ import {
     KeyEvent,
     Input,
     Texture2D,
+    ShaderLibrary,
 } from "@hazel/hazel";
 import { KeyCodes } from "@hazel/share";
 import { mat4, vec3, vec4 } from "gl-matrix";
@@ -33,6 +34,8 @@ class WebGL2Layer extends Layer {
     }
 
     onAttach(): void {
+        this.shaderLibrary = new ShaderLibrary();
+
         //#region Triangle
         this.vertexArray = VertexArray.create();
         this.vertexArray.bind();
@@ -93,7 +96,7 @@ class WebGL2Layer extends Layer {
 			}
 		`;
 
-        this.shader = Shader.create(vertexSrc, fragmentSrc);
+        this.shader = Shader.create("shader", vertexSrc, fragmentSrc);
         //#endregion
 
         //#region flatColor
@@ -154,6 +157,7 @@ class WebGL2Layer extends Layer {
         `;
 
         this.flatColorShader = Shader.create(
+            "flatColor",
             flatColorVertexSrc,
             flatColorFragmentSrc,
         );
@@ -161,13 +165,13 @@ class WebGL2Layer extends Layer {
         //#endregion
 
         //#region Texture
-        this.textureShader = Shader.create(TextureGLSL);
+        const textureShader = this.shaderLibrary.load("texture", TextureGLSL);
 
         this.texture = Texture2D.create(CheckerboardPng);
         this.chernoLogoTexture = Texture2D.create(ChernoLogoPng);
 
-        this.textureShader.bind();
-        this.textureShader.uploadUniformInt("u_Texture", 0);
+        textureShader.bind();
+        textureShader.uploadUniformInt("u_Texture", 0);
         //#endregion
 
         //#region Debug GUI
@@ -246,16 +250,17 @@ class WebGL2Layer extends Layer {
                 );
             }
         }
+        const textureShader = this.shaderLibrary.get("texture");
 
         this.texture.bind();
         Renderer.submit(
-            this.textureShader,
+            textureShader,
             this.flatColorVA,
             mat4.scale(mat4.create(), mat4.create(), [1.5, 1.5, 1.5]),
         );
         this.chernoLogoTexture.bind();
         Renderer.submit(
-            this.textureShader,
+            textureShader,
             this.flatColorVA,
             mat4.scale(mat4.create(), mat4.create(), [1.5, 1.5, 1.5]),
         );
@@ -275,6 +280,8 @@ class WebGL2Layer extends Layer {
     }
 
     // #region Private Fields
+    shaderLibrary!: ShaderLibrary;
+
     vertexArray!: VertexArray;
     vertexBuffer!: VertexBuffer;
     indexBuffer!: IndexBuffer;
@@ -284,7 +291,6 @@ class WebGL2Layer extends Layer {
     flatColorVA!: VertexArray;
     flatColorVB!: VertexBuffer;
 
-    textureShader!: Shader;
     texture!: Texture2D;
     chernoLogoTexture!: Texture2D;
 

@@ -6,13 +6,20 @@ export enum ShaderType {
 }
 
 export class Shader {
-    constructor(vertexSource: string, fragmentSource: string) {}
+    constructor(name: string, source: string);
+    constructor(name: string, vertexSource: string, fragmentSource: string);
+    constructor(name: string, vertexSource: string, fragmentSource?: string) {
+        this.name = name;
+    }
 
     bind(): void {
         throw new Error("Method not implemented.");
     }
     unbind(): void {
         throw new Error("Method not implemented.");
+    }
+    getName(): string {
+        return this.name;
     }
 
     //#region Upload Uniforms implementation for Platform
@@ -55,7 +62,62 @@ export class Shader {
     //#endregion
 
     static create: typeof create;
+
+    //#region Private Fields
+    protected name: string;
+    //#endregion
 }
 
-declare function create(filePath: string): Shader;
-declare function create(vertexSource: string, fragmentSource: string): Shader;
+declare function create(name: string, filePath: string): Shader;
+declare function create(
+    name: string,
+    vertexSource: string,
+    fragmentSource: string,
+): Shader;
+
+export class ShaderLibrary {
+    constructor() {}
+
+    add(shader: Shader): void;
+    add(name: string, shader: Shader): void;
+    add(name: string | Shader, shader?: Shader) {
+        if (!shader) {
+            shader = name as Shader;
+            name = shader.getName();
+        }
+        const _name = name as string;
+
+        if (this.#shaders.has(_name)) {
+            console.warn(`Shader '${_name}' already exists!`);
+            return;
+        }
+
+        this.#shaders.set(_name, shader);
+    }
+
+    load(name: string, source: string): Shader;
+    load(name: string, vertexSource: string, fragmentSource: string): Shader;
+    load(name: string, vertexSource: string, fragmentSource?: string): Shader {
+        const shader = Shader.create(name, vertexSource, fragmentSource ?? "");
+        this.add(shader);
+        return shader;
+    }
+
+    get(name: string): Shader {
+        const shader = this.#shaders.get(name);
+        if (!shader) {
+            console.warn(`Shader '${name}' not found!`);
+            return null as never;
+        }
+
+        return shader;
+    }
+
+    exists(name: string): boolean {
+        return this.#shaders.has(name);
+    }
+
+    //#region Private Fields
+    #shaders: Map<string, Shader> = new Map();
+    //#endregion
+}
