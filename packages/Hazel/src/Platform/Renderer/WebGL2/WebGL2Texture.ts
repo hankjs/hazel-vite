@@ -12,6 +12,7 @@ export class WebGL2Texture2D extends Texture2D {
     constructor(path: string) {
         super();
         this.path = path;
+        console.log("path", path);
         const glTexture = gl.createTexture();
         if (!glTexture) {
             throw new Error("Failed to create texture");
@@ -36,19 +37,18 @@ export class WebGL2Texture2D extends Texture2D {
         let internalFormat = 0;
         let dataFormat = 0;
 
-        console.log("this.channels", this.channels);
-        // if (this.channels === 4) {
+        if (this.channels === 4) {
             internalFormat = gl.RGBA8;
             dataFormat = gl.RGBA;
-        // } else if (this.channels === 3) {
-        //     internalFormat = gl.RGB8;
-        //     dataFormat = gl.RGB;
-        // }
+        } else if (this.channels === 3) {
+            internalFormat = gl.RGB8;
+            dataFormat = gl.RGB;
+        }
 
         gl.texStorage2D(
             gl.TEXTURE_2D,
             1,
-            gl.RGBA8,
+            internalFormat,
             this.width,
             this.height,
         );
@@ -63,9 +63,9 @@ export class WebGL2Texture2D extends Texture2D {
             0,
             this.width,
             this.height,
-            gl.RGBA,
+            dataFormat,
             gl.UNSIGNED_BYTE,
-            getImageData(img),
+            img,
         );
         img.remove()
     }

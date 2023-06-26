@@ -24,6 +24,7 @@ import {
 } from "@hazel/hazel";
 import { KeyCodes } from "@hazel/share";
 import { mat4, vec3, vec4 } from "gl-matrix";
+import { CheckerboardPng, ChernoLogoPng } from "./assets/textures";
 
 class WebGL2Layer extends Layer {
     constructor(name: string = "WebGL2") {
@@ -196,8 +197,9 @@ class WebGL2Layer extends Layer {
             textureFragmentSrc,
         );
 
-        this.texture = Texture2D.create("/public/image/textures/Checkerboard.png");
-        this.chernoLogoTexture = Texture2D.create("/public/image/textures/ChernoLogo.png");
+        this.texture = Texture2D.create(CheckerboardPng);
+        this.chernoLogoTexture = Texture2D.create(ChernoLogoPng);
+
         this.textureShader.bind();
         this.textureShader.uploadUniformInt("u_Texture", 0);
         //#endregion
