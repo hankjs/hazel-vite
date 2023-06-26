@@ -20,11 +20,12 @@ import {
     KeyPressedEvent,
     KeyEvent,
     Input,
-    Texture2D
+    Texture2D,
 } from "@hazel/hazel";
 import { KeyCodes } from "@hazel/share";
 import { mat4, vec3, vec4 } from "gl-matrix";
 import { CheckerboardPng, ChernoLogoPng } from "./assets/textures";
+import { TextureGLSL } from "./assets/shaders";
 
 class WebGL2Layer extends Layer {
     constructor(name: string = "WebGL2") {
@@ -158,44 +159,9 @@ class WebGL2Layer extends Layer {
         );
         this.flatColorPosition = vec3.fromValues(-1, -1, 0.0);
         //#endregion
-        
+
         //#region Texture
-        const textureVertexSrc = `#version 300 es
-        precision mediump float;
-        
-        layout(location = 0) in vec3 a_Position;
-        layout(location = 1) in vec2 a_TexCoord;
-
-        uniform mat4 u_ViewProjection;
-        uniform mat4 u_Transform;
-
-        out vec2 v_TexCoord;
-
-        void main()
-        {
-            v_TexCoord = a_TexCoord;
-            gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);	
-        }
-    `;
-
-        const textureFragmentSrc = `#version 300 es
-        precision mediump float;
-        
-        out vec4 color;
-
-        in vec2 v_TexCoord;
-
-        uniform sampler2D u_Texture;
-
-        void main()
-        {
-            color = texture(u_Texture, v_TexCoord);
-        }
-    `;
-        this.textureShader = Shader.create(
-            textureVertexSrc,
-            textureFragmentSrc,
-        );
+        this.textureShader = Shader.create(TextureGLSL);
 
         this.texture = Texture2D.create(CheckerboardPng);
         this.chernoLogoTexture = Texture2D.create(ChernoLogoPng);
@@ -281,10 +247,18 @@ class WebGL2Layer extends Layer {
             }
         }
 
-        this.texture.bind()
-        Renderer.submit(this.textureShader, this.flatColorVA, mat4.scale(mat4.create(), mat4.create(), [1.5, 1.5, 1.5]));
-        this.chernoLogoTexture.bind()
-        Renderer.submit(this.textureShader, this.flatColorVA, mat4.scale(mat4.create(), mat4.create(), [1.5, 1.5, 1.5]));
+        this.texture.bind();
+        Renderer.submit(
+            this.textureShader,
+            this.flatColorVA,
+            mat4.scale(mat4.create(), mat4.create(), [1.5, 1.5, 1.5]),
+        );
+        this.chernoLogoTexture.bind();
+        Renderer.submit(
+            this.textureShader,
+            this.flatColorVA,
+            mat4.scale(mat4.create(), mat4.create(), [1.5, 1.5, 1.5]),
+        );
 
         // Renderer.submit(this.shader, this.vertexArray);
 

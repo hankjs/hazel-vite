@@ -1,5 +1,10 @@
 import type { mat3, mat4, vec2, vec3, vec4 } from "gl-matrix";
 
+export enum ShaderType {
+    vertex = "vertex",
+    fragment = "fragment",
+}
+
 export class Shader {
     constructor(vertexSource: string, fragmentSource: string) {}
 
@@ -49,5 +54,8 @@ export class Shader {
     }
     //#endregion
 
-    static create: (vertexSource: string, fragmentSource: string) => Shader;
+    static create: typeof create;
 }
+
+declare function create(filePath: string): Shader;
+declare function create(vertexSource: string, fragmentSource: string): Shader;

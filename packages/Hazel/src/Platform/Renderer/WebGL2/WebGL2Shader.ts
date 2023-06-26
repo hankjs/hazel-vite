@@ -1,23 +1,43 @@
 import type { mat3, mat4, vec2, vec3, vec4 } from "gl-matrix";
 import { gl } from "./gl";
+import { ShaderType } from "@pw/Hazel/Hazel/Renderer/Shader";
 
 export class WebGL2Shader {
     constructor(vertexSource: string, fragmentSource: string) {
+        //#region normalize shader source
+        let shaderMap: Map<ShaderType, string>;
+        if (fragmentSource) {
+            shaderMap = new Map();
+            shaderMap.set(ShaderType.vertex, vertexSource);
+            shaderMap.set(ShaderType.fragment, fragmentSource);
+        } else {
+            shaderMap = this.preProcess(vertexSource);
+            vertexSource = shaderMap.get(ShaderType.vertex)!;
+            fragmentSource = shaderMap.get(ShaderType.fragment)!;
+        }
+        //#endregion
+
+        // compile shader
+        const shaderIds: WebGLShader[] = [];
         // Create an empty vertex shader handle
-        const vertexShader = compileShader(gl, gl.VERTEX_SHADER, vertexSource);
-        const fragmentShader = compileShader(
-            gl,
-            gl.FRAGMENT_SHADER,
-            fragmentSource,
-        );
-        const program = createProgram(gl, vertexShader, fragmentShader);
+        for (const type of shaderMap.keys()) {
+            shaderIds.push(
+                this.compileShader(
+                    type2WebGL2ShaderType(type),
+                    shaderMap.get(type)!,
+                ),
+            );
+        }
 
+        // link shader program
+        const program = this.createProgram(shaderIds);
         this.rendererID = program as number;
-
-        gl.detachShader(program, vertexShader);
-        gl.detachShader(program, fragmentShader);
-        gl.deleteShader(vertexShader);
-        gl.deleteShader(fragmentShader);
+        // clean up
+        for (let i = 0; i < shaderIds.length; i++) {
+            const shader = shaderIds[i];
+            gl.detachShader(program, shader);
+            gl.deleteShader(shader);
+        }
     }
 
     bind(): void {
@@ -77,80 +97,118 @@ export class WebGL2Shader {
     //#region Private Fields
     private rendererID: number;
     //#endregion
+
+    //#region Private Methods
+    /**
+     * @param source vertex or fragment shader source code
+     */
+    private preProcess(source: string): Map<ShaderType, string> {
+        const lines = source.split("\n");
+        const result = new Map<ShaderType, string>();
+
+        let type: ShaderType | null = null;
+        const typeLines: string[] = [];
+        for (const text of lines) {
+            const match = text.match(/#type\s+(.*)/);
+            if (match) {
+                if (type) {
+                    result.set(type, typeLines.join("\n"));
+                    typeLines.length = 0;
+                }
+                type = match[1] as ShaderType;
+            } else {
+                typeLines.push(text);
+            }
+        }
+        if (type && typeLines.length > 0 && !result.has(type)) {
+            result.set(type, typeLines.join("\n"));
+        }
+
+        return result;
+    }
+
+    /**
+     * Creates and compiles a shader.
+     *
+     * @param shaderSource The GLSL source code for the shader.
+     * @param shaderType The type of shader, VERTEX_SHADER or
+     *     FRAGMENT_SHADER.
+     * @return The shader.
+     */
+    private compileShader(
+        shaderType: number,
+        shaderSource: string,
+    ): WebGLShader {
+        // Create the shader object
+        var shader = gl.createShader(shaderType);
+        if (!shader) {
+            throw `[Renderer] could not create Shader: ${shaderType}`;
+        }
+
+        // Set the shader source code.
+        gl.shaderSource(shader, shaderSource);
+
+        // Compile the shader
+        gl.compileShader(shader);
+
+        // Check if it compiled
+        var success = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
+        if (!success) {
+            // Something went wrong during compilation; get the error
+            throw (
+                "[Renderer] could not compile shader:" +
+                gl.getShaderInfoLog(shader)
+            );
+        }
+
+        return shader;
+    }
+
+    /**
+     * Creates a program from 2 shaders.
+     *
+     * @param vertexShader A vertex shader.
+     * @param fragmentShader A fragment shader.
+     * @return A program.
+     */
+    private createProgram(shaders: WebGLShader[]): WebGLProgram {
+        // create a program.
+        var program = gl.createProgram();
+        if (!program) {
+            throw "[Renderer] could not create WebGLProgram";
+        }
+
+        // attach the shaders.
+        for (let i = 0; i < shaders.length; i++) {
+            const shader = shaders[i];
+            gl.attachShader(program, shader);
+        }
+
+        // link the program.
+        gl.linkProgram(program);
+
+        // Check if it linked.
+        var success = gl.getProgramParameter(program, gl.LINK_STATUS);
+        if (!success) {
+            // something went wrong with the link; get the error
+            throw (
+                "[Renderer] program failed to link:" +
+                gl.getProgramInfoLog(program)
+            );
+        }
+
+        return program;
+    }
+
+    //#endregion
 }
 
-/**
- * Creates and compiles a shader.
- *
- * @param gl The WebGL Context.
- * @param shaderSource The GLSL source code for the shader.
- * @param shaderType The type of shader, VERTEX_SHADER or
- *     FRAGMENT_SHADER.
- * @return The shader.
- */
-function compileShader(
-    gl: WebGL2RenderingContext,
-    shaderType: number,
-    shaderSource: string,
-): WebGLShader {
-    // Create the shader object
-    var shader = gl.createShader(shaderType);
-    if (!shader) {
-        throw `[Renderer] could not create Shader: ${shaderType}`;
+function type2WebGL2ShaderType(type: ShaderType): number {
+    // prettier-ignore
+    switch (type) {
+        case ShaderType.vertex  :      return gl.VERTEX_SHADER;
+        case ShaderType.fragment:    return gl.FRAGMENT_SHADER;
     }
 
-    // Set the shader source code.
-    gl.shaderSource(shader, shaderSource);
-
-    // Compile the shader
-    gl.compileShader(shader);
-
-    // Check if it compiled
-    var success = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
-    if (!success) {
-        // Something went wrong during compilation; get the error
-        throw (
-            "[Renderer] could not compile shader:" + gl.getShaderInfoLog(shader)
-        );
-    }
-
-    return shader;
-}
-
-/**
- * Creates a program from 2 shaders.
- *
- * @param gl The WebGL context.
- * @param vertexShader A vertex shader.
- * @param fragmentShader A fragment shader.
- * @return A program.
- */
-function createProgram(
-    gl: WebGL2RenderingContext,
-    vertexShader: WebGLShader,
-    fragmentShader: WebGLShader,
-): WebGLProgram {
-    // create a program.
-    var program = gl.createProgram();
-    if (!program) {
-        throw "[Renderer] could not create WebGLProgram";
-    }
-
-    // attach the shaders.
-    gl.attachShader(program, vertexShader);
-    gl.attachShader(program, fragmentShader);
-
-    // link the program.
-    gl.linkProgram(program);
-
-    // Check if it linked.
-    var success = gl.getProgramParameter(program, gl.LINK_STATUS);
-    if (!success) {
-        // something went wrong with the link; get the error
-        throw (
-            "[Renderer] program failed to link:" + gl.getProgramInfoLog(program)
-        );
-    }
-
-    return program;
+    return null as never;
 }

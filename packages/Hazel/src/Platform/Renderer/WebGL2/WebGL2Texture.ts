@@ -12,7 +12,6 @@ export class WebGL2Texture2D extends Texture2D {
     constructor(path: string) {
         super();
         this.path = path;
-        console.log("path", path);
         const glTexture = gl.createTexture();
         if (!glTexture) {
             throw new Error("Failed to create texture");

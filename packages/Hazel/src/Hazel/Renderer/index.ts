@@ -51,6 +51,7 @@ IndexBuffer.create = function create(
     return null as never;
 };
 
+// @ts-expect-error overload
 Shader.create = function create(
     vertexSource: string,
     fragmentSource: string,
