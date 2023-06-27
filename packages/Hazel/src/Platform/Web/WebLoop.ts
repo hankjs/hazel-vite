@@ -11,18 +11,19 @@ export class WebLoop extends _Loop {
         super();
     }
 
-    while(segment: CallableFunction, onStopped: CallableFunction = noop) {
+    while(segment: () => boolean, onStopped: CallableFunction = noop) {
+        this.running = true;
         this.segment = segment;
         this.onStopped = onStopped;
         window.requestAnimationFrame(this.nextTick.bind(this));
     }
 
     async nextTick() {
-        if (this.m_stop) {
+        if (!this.running) {
             this.onStopped();
             return;
         }
-        await this.segment();
+        this.running = await this.segment();
         window.requestAnimationFrame(this.nextTick.bind(this));
     }
 

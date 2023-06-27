@@ -3,12 +3,12 @@ export abstract class Loop {
     static create: () => Loop;
 
     start() {
-        this.m_stop = false;
+        this.running = true;
     }
 
     stop() {
-        this.m_stop = true;
+        this.running = false;
     }
 
-    protected m_stop = false;
+    protected running = false;
 }

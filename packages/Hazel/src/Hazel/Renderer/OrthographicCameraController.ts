@@ -24,6 +24,15 @@ export class OrthographicCameraController {
     }
 
     //#region Public Methods
+    getZoomLevel(): number {
+        return this.#zoomLevel;
+    }
+
+    setZoomLevel(zoomLevel: number): void {
+        this.#zoomLevel = zoomLevel;
+        this.calcCameraProjection();
+    }
+
     onUpdate(ts: number): void {
         //#region Camera Control
         if (Input.isKeyPressed(KeyCodes.KeyA)) {

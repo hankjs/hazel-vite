@@ -80,8 +80,8 @@ export class WebAppWindow extends AppWindow {
         this.#data.width = props.width;
         this.#data.height = props.height;
 
-        this.#canvas.style.width = `${props.width}px`;
-        this.#canvas.style.height = `${props.height}px`;
+        this.#canvas.width = props.width;
+        this.#canvas.height = props.height;
 
         this.context = GraphicsContext.create(this.#canvas);
         this.context.init();
@@ -193,8 +193,8 @@ export class WebAppWindow extends AppWindow {
     handleEvent(event: HazelEvent) {
         if (event.getType() === EventType.WindowResize) {
             const resizeEvent = event as WindowResizeEvent;
-            this.#canvas.style.width = `${resizeEvent.getWidth()}px`;
-            this.#canvas.style.height = `${resizeEvent.getHeight()}px`;
+            this.#canvas.width = resizeEvent.getWidth()
+            this.#canvas.height = resizeEvent.getHeight()
         }
         this.#data.eventCallback(event);
     }

@@ -13,14 +13,11 @@ import {
     RenderCommand,
     Renderer,
     OrthographicCamera,
-    EventDispatcher,
-    KeyPressedEvent,
-    Input,
     Texture2D,
     ShaderLibrary,
     OrthographicCameraController,
+    WindowResizeEvent,
 } from "@hazel/hazel";
-import { KeyCodes } from "@hazel/share";
 import { mat4, vec3 } from "gl-matrix";
 import { CheckerboardPng, ChernoLogoPng } from "./assets/textures";
 import { FlatColorGLSL, ShaderGLSL, TextureGLSL } from "./assets/shaders";

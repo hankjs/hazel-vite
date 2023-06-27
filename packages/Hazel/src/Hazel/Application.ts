@@ -28,6 +28,7 @@ export class Application {
         this.appWindow = AppWindow.create(props);
         this.appWindow.setEventCallback(this.onEvent.bind(this));
         this.clock = new Clock();
+        this.minimized = false;
 
         Renderer.init()
 
@@ -71,5 +72,6 @@ export class Application {
     // init in Platform
     protected appWindow!: AppWindow;
     protected clock: Clock;
+    protected minimized: boolean;
     //#endregion
 }

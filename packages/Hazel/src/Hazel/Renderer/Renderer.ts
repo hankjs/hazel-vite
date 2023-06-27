@@ -35,7 +35,7 @@ export class Renderer {
         RenderCommand.drawIndexed(vertexArray);
     }
 
-    static setViewport(x: number, y: number, width: number, height: number): void {
-        RenderCommand.setViewport(x, y, width, height);
+    static onWindowResize(width: number, height: number): void {
+        RenderCommand.setViewport(0, 0, width, height);
     }
 }
