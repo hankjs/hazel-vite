@@ -1,8 +1,8 @@
-import { EventCategory, eventClassCategory, eventClassType, Event, EventType } from "./Event";
+import { EventCategory, eventClassCategory, eventClassType, HazelEvent, EventType } from "./HazelEvent";
 
 @eventClassCategory(EventCategory.EventCategoryMouse | EventCategory.EventCategoryInput)
 @eventClassType(EventType.MouseMoved)
-export class MouseMovedEvent extends Event {
+export class MouseMovedEvent extends HazelEvent {
     constructor(
         protected mouseX: number,
         protected mouseY: number,
@@ -22,7 +22,7 @@ export class MouseMovedEvent extends Event {
 
 @eventClassCategory(EventCategory.EventCategoryMouse | EventCategory.EventCategoryInput)
 @eventClassType(EventType.MouseScrolled)
-export class MouseScrolledEvent extends Event {
+export class MouseScrolledEvent extends HazelEvent {
     constructor(
         protected m_XOffset: number,
         protected m_YOffset: number,
@@ -42,7 +42,7 @@ export class MouseScrolledEvent extends Event {
 }
 
 @eventClassCategory(EventCategory.EventCategoryMouse | EventCategory.EventCategoryInput)
-export class MouseButtonEvent extends Event {
+export class MouseButtonEvent extends HazelEvent {
     constructor(
         protected m_Button: number,
     ) { super(); }

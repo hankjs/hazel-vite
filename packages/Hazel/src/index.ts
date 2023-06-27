@@ -5,7 +5,7 @@ export { type WindowProps } from "./Hazel";
 export {
     Input,
     EventDispatcher,
-    Event,
+    HazelEvent,
     EventType,
     AppTickEvent,
     AppRenderEvent,
@@ -52,5 +52,5 @@ export {
 //#endregion
 
 //#region Camera
-export { OrthographicCamera } from "./Hazel";
+export { OrthographicCamera, OrthographicCameraController } from "./Hazel";
 //#endregion

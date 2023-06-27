@@ -1,4 +1,4 @@
-import { Event } from "./Events/Event";
+import { HazelEvent } from "./Events/HazelEvent";
 import { Lifecycle } from "./Lifecycle";
 
 export abstract class Layer extends Lifecycle {
@@ -8,7 +8,7 @@ export abstract class Layer extends Lifecycle {
     }
 
     // @ts-ignore abstract methods props use in implement.
-    onEvent(event: Event): void {
+    onEvent(event: HazelEvent): void {
         throw new Error("Method not implemented.");
     }
 

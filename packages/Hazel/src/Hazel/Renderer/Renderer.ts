@@ -18,7 +18,7 @@ export class Renderer {
         RenderCommand.init()
     }
     static beginScene(camera: OrthographicCamera): void {
-        sceneData.viewProjectionMatrix = camera.getViewProjectionMatrix();
+        sceneData.viewProjectionMatrix = camera.getViewProjection();
     }
 
     static endScene(): void {}

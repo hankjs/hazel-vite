@@ -1,5 +1,5 @@
 import { listenElementRemove } from "@hazel/share";
-import { EventType, type Event } from "@pw/Hazel/Hazel/Events/Event";
+import { EventType, type HazelEvent } from "@pw/Hazel/Hazel/Events";
 import {
     WindowCloseEvent,
     WindowResizeEvent,
@@ -190,7 +190,7 @@ export class WebAppWindow extends AppWindow {
     }
     //#endregion
 
-    handleEvent(event: Event) {
+    handleEvent(event: HazelEvent) {
         if (event.getType() === EventType.WindowResize) {
             const resizeEvent = event as WindowResizeEvent;
             this.#canvas.style.width = `${resizeEvent.getWidth()}px`;

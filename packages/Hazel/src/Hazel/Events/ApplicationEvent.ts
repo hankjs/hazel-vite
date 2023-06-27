@@ -1,8 +1,8 @@
-import { EventCategory, eventClassCategory, eventClassType, Event, EventType } from "./Event";
+import { EventCategory, eventClassCategory, eventClassType, HazelEvent, EventType } from "./HazelEvent";
 
 @eventClassCategory(EventCategory.EventCategoryApplication)
 @eventClassType(EventType.WindowResize)
-export class WindowResizeEvent extends Event {
+export class WindowResizeEvent extends HazelEvent {
     constructor(
         private width: number,
         private height: number
@@ -22,20 +22,20 @@ export class WindowResizeEvent extends Event {
 
 @eventClassCategory(EventCategory.EventCategoryApplication)
 @eventClassType(EventType.WindowClose)
-export class WindowCloseEvent extends Event {
+export class WindowCloseEvent extends HazelEvent {
 }
 
 @eventClassCategory(EventCategory.EventCategoryApplication)
 @eventClassType(EventType.AppTick)
-export class AppTickEvent extends Event {
+export class AppTickEvent extends HazelEvent {
 }
 
 @eventClassCategory(EventCategory.EventCategoryApplication)
 @eventClassType(EventType.AppUpdate)
-export class AppUpdateEvent extends Event {
+export class AppUpdateEvent extends HazelEvent {
 }
 
 @eventClassCategory(EventCategory.EventCategoryApplication)
 @eventClassType(EventType.AppRender)
-export class AppRenderEvent extends Event {
+export class AppRenderEvent extends HazelEvent {
 }

@@ -1,13 +1,11 @@
 import { Clock } from "@hazel/share";
 import { AppWindow, type WindowProps } from "./AppWindow";
 import type {
-    Event,
+    HazelEvent,
 } from "./Events";
 import type { Layer } from "./Layer";
 import { LayerStack } from "./LayerStack";
-import { Renderer, Shader } from "./Renderer";
-import type { IndexBuffer, VertexBuffer } from "./Renderer/Buffer";
-import type { VertexArray } from "./Renderer/VertexArray";
+import { Renderer } from "./Renderer";
 import { GuiLayer } from "./Gui";
 
 let app: Application;
@@ -52,7 +50,7 @@ export class Application {
     }
 
     // implements in Client
-    onEvent(event: Event) {
+    onEvent(event: HazelEvent) {
         throw new Error("Method not implemented.");
     }
 

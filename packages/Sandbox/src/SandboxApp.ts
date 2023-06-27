@@ -1,6 +1,6 @@
 import {
     Layer,
-    Event,
+    HazelEvent,
     Application,
     type WindowProps,
     GuiLayer,
@@ -18,6 +18,7 @@ import {
     Input,
     Texture2D,
     ShaderLibrary,
+    OrthographicCameraController,
 } from "@hazel/hazel";
 import { KeyCodes } from "@hazel/share";
 import { mat4, vec3 } from "gl-matrix";
@@ -27,9 +28,7 @@ import { FlatColorGLSL, ShaderGLSL, TextureGLSL } from "./assets/shaders";
 class WebGL2Layer extends Layer {
     constructor(name: string = "WebGL2") {
         super(name);
-    }
-
-    onAttach(): void {
+        this.cameraController = new OrthographicCameraController(window.innerWidth / window.innerHeight);
         this.shaderLibrary = new ShaderLibrary();
 
         //#region Triangle
@@ -91,8 +90,6 @@ class WebGL2Layer extends Layer {
         );
         this.flatColorVA.addIndexBuffer(this.flatColorIB);
         this.shaderLibrary.load("flatColor", FlatColorGLSL);
-
-        this.flatColorPosition = vec3.fromValues(-1, -1, 0.0);
         //#endregion
 
         //#region Texture
@@ -113,56 +110,23 @@ class WebGL2Layer extends Layer {
         //#endregion
     }
 
+    onAttach(): void {}
+
     onDetach(): void {}
 
     onUpdate(ts: number): void {
-        //#region Camera Control
-        if (Input.isKeyPressed(KeyCodes.ArrowLeft)) {
-            this.cameraPosition[0] += this.cameraMoveSpeed * ts;
-        } else if (Input.isKeyPressed(KeyCodes.ArrowRight)) {
-            this.cameraPosition[0] -= this.cameraMoveSpeed * ts;
-        }
-
-        if (Input.isKeyPressed(KeyCodes.ArrowUp)) {
-            this.cameraPosition[1] -= this.cameraMoveSpeed * ts;
-        } else if (Input.isKeyPressed(KeyCodes.ArrowDown)) {
-            this.cameraPosition[1] += this.cameraMoveSpeed * ts;
-        }
-
-        if (Input.isKeyPressed(KeyCodes.KeyA)) {
-            this.cameraRotation -= this.cameraRotationSpeed * ts;
-        } else if (Input.isKeyPressed(KeyCodes.KeyD)) {
-            this.cameraRotation += this.cameraRotationSpeed * ts;
-        }
-        //#endregion
-
-        //#region flatColor Transform
-        if (Input.isKeyPressed(KeyCodes.KeyJ)) {
-            this.flatColorPosition[0] -= this.flatColorMoveSpeed * ts;
-        } else if (Input.isKeyPressed(KeyCodes.KeyL)) {
-            this.flatColorPosition[0] += this.flatColorMoveSpeed * ts;
-        }
-
-        if (Input.isKeyPressed(KeyCodes.KeyI)) {
-            this.flatColorPosition[1] += this.flatColorMoveSpeed * ts;
-        } else if (Input.isKeyPressed(KeyCodes.KeyK)) {
-            this.flatColorPosition[1] -= this.flatColorMoveSpeed * ts;
-        }
-        //#endregion
+        this.cameraController.onUpdate(ts);
 
         RenderCommand.setClearColor([0.1, 0.1, 0.1, 1]);
         RenderCommand.clear();
 
-        this.camera.setPosition(this.cameraPosition);
-        this.camera.setRotation(this.cameraRotation);
-
-        Renderer.beginScene(this.camera);
+        Renderer.beginScene(this.cameraController.getCamera());
 
         const scale = mat4.scale(mat4.create(), mat4.create(), [0.1, 0.1, 0.1]);
         const originTransform = mat4.translate(
             mat4.create(),
             mat4.create(),
-            this.flatColorPosition,
+            vec3.fromValues(-1, -1, 0.0),
         );
 
         const flatColorShader = this.shaderLibrary.get("flatColor");
@@ -190,13 +154,11 @@ class WebGL2Layer extends Layer {
         Renderer.submit(
             textureShader,
             this.flatColorVA,
-            mat4.scale(mat4.create(), mat4.create(), [1.5, 1.5, 1.5]),
         );
         this.chernoLogoTexture.bind();
         Renderer.submit(
             textureShader,
             this.flatColorVA,
-            mat4.scale(mat4.create(), mat4.create(), [1.5, 1.5, 1.5]),
         );
 
         // const shader = this.shaderLibrary.get("shader");
@@ -205,13 +167,8 @@ class WebGL2Layer extends Layer {
         Renderer.endScene();
     }
 
-    onEvent(event: Event): void {
-        const dispatcher = new EventDispatcher(event);
-        dispatcher.dispatch(KeyPressedEvent, this.onKeyPressedEvent.bind(this));
-    }
-
-    onKeyPressedEvent(event: KeyPressedEvent) {
-        return false;
+    onEvent(event: HazelEvent): void {
+        this.cameraController.onEvent(event);
     }
 
     // #region Private Fields
@@ -229,13 +186,8 @@ class WebGL2Layer extends Layer {
     chernoLogoTexture!: Texture2D;
 
     camera = new OrthographicCamera(-2, 2, -2, 2);
-    cameraPosition = vec3.create();
-    cameraRotation = 0;
-    cameraMoveSpeed = 1;
-    cameraRotationSpeed = 180;
+    cameraController!: OrthographicCameraController;
 
-    flatColorPosition = vec3.create();
-    flatColorMoveSpeed = 1;
     squareColor: [number, number, number] = [0.2, 0.3, 0.8];
     //#endregion
 }

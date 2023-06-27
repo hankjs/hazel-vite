@@ -1,4 +1,4 @@
-import { type Event } from "../Events";
+import { type HazelEvent } from "../Events";
 import { Layer } from "../Layer";
 import * as dat from "dat.gui";
 
@@ -122,7 +122,7 @@ export class DatDemoGuiLayer extends Layer {
         this.#gui.destroy();
     }
     onUpdate(): void {}
-    onEvent(event: Event): void {}
+    onEvent(event: HazelEvent): void {}
 
     //#region Private Fields
     // init onAttach

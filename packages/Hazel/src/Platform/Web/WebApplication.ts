@@ -1,5 +1,5 @@
 //#region Hazel
-import { Event } from "@pw/Hazel/Hazel/Events/Event";
+import { HazelEvent } from "@pw/Hazel/Hazel/Events";
 import { Application } from "@pw/Hazel/Hazel/Application";
 //#endregion
 
@@ -33,7 +33,7 @@ export class WebApplication extends Application {
         );
     }
 
-    onEvent(event: Event): void {
+    onEvent(event: HazelEvent): void {
         for (const layer of this.layerStack) {
             layer.onEvent(event);
             if (event.handled) {

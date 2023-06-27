@@ -40,15 +40,35 @@ export class OrthographicCamera {
         this.calculateViewMatrix();
     }
 
-    getProjectionMatrix(): mat4 {
+    getProjection(): mat4 {
         return this.#projectionMatrix;
     }
 
-    getViewMatrix(): mat4 {
+    setProjection(
+        left: number,
+        right: number,
+        bottom: number,
+        top: number,
+    ): void {
+        // prettier-ignore
+        this.#projectionMatrix = mat4.ortho(
+            mat4.create(),
+            left, right, bottom, top,
+            -1.0,
+            1.0,
+        );
+        this.#viewProjectionMatrix = mat4.mul(
+            mat4.create(),
+            this.#projectionMatrix,
+            this.#viewMatrix,
+        );
+    }
+
+    getView(): mat4 {
         return this.#viewMatrix;
     }
 
-    getViewProjectionMatrix(): mat4 {
+    getViewProjection(): mat4 {
         return this.#viewProjectionMatrix;
     }
 

@@ -93,6 +93,7 @@ initRenderCommand();
 //#region export
 export * from "./Shader";
 export * from "./OrthographicCamera";
+export * from "./OrthographicCameraController";
 
 export { GraphicsContext, IndexBuffer, VertexBuffer, Shader, VertexArray };
 

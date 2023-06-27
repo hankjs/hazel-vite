@@ -1,8 +1,8 @@
 import { key2Num } from "@hazel/share";
-import { EventCategory, eventClassCategory, eventClassType, Event, EventType } from "./Event";
+import { EventCategory, eventClassCategory, eventClassType, HazelEvent, EventType } from "./HazelEvent";
 
 @eventClassCategory(EventCategory.EventCategoryKeyboard | EventCategory.EventCategoryInput)
-export class KeyEvent extends Event {
+export class KeyEvent extends HazelEvent {
     constructor(
         protected code: string
     ) { super(); }

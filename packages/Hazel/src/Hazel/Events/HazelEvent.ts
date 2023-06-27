@@ -68,7 +68,7 @@ export function eventClassCategory(eventCategory: EventCategory) {
         });
     };
 }
-export abstract class Event {
+export abstract class HazelEvent {
     //#region eventClassType
     /** use Descriptor {eventClassType} to implement */
     static getStaticType: () => EventType
@@ -95,7 +95,7 @@ export abstract class Event {
 }
 
 export class EventDispatcher {
-    constructor(event: Event) {
+    constructor(event: HazelEvent) {
         this.event = event;
     }
 
@@ -104,7 +104,7 @@ export class EventDispatcher {
      * @param func return boolean to indicate whether the event is handled
      * @returns 
      */
-    dispatch<T extends Event>(
+    dispatch<T extends HazelEvent>(
         event: {
             getStaticType: () => EventType;
         },
@@ -117,5 +117,5 @@ export class EventDispatcher {
         return false;
     }
 
-    private event: Event;
+    private event: HazelEvent;
 }
